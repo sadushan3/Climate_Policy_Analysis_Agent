@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from utils.Utils import sanitize_text, validate_policy_input
-from Backend.Agents.IT22180520_Sadushan_Agent.Models import compute_similarity, extract_overlap_and_unique
+from Backend.Agents.IT22180520_Sadushan_Agent.utils.Utils import sanitize_text, validate_policy_input
+from Backend.Agents.IT22180520_Sadushan_Agent.Models.Comparator_model import compute_similarity, extract_overlap_unique
+
 
 
 router=APIRouter()
@@ -22,7 +23,7 @@ def  compare_policy (request: ploicycomparter):
         
         similarity_score=compute_similarity(policy1,policy2)
         
-        comparation=extract_overlap_and_unique(policy1,policy2)
+        comparation=extract_overlap_unique(policy1,policy2)
         
         return {
         "similarity_score": similarity_score,

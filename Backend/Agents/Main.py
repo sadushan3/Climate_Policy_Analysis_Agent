@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from Backend.Agents.IT22180520_Sadushan_Agent.Routes import comparator_routes
+from Backend.Agents.IT22180520_Sadushan_Agent.Routes import Routes
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
@@ -18,7 +18,7 @@ app.add_middleware(
 
 )
 
-app.include_router(comparator_routes.router, prefix="/api", tags=["Policy Comparator"])
+app.include_router(Routes.router, prefix="/api", tags=["Policy Comparator"])
 
 @app.get("/")
 def root():
