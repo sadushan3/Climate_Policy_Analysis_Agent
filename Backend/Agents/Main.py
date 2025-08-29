@@ -23,3 +23,7 @@ app.include_router(Routes.router, prefix="/api", tags=["Policy Comparator"])
 @app.get("/")
 def root():
     return {"message": "Policy Comparator Agent API is running securely "}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("Backend.Agents.Main:app", host="127.0.0.1", port=8000, reload=True)

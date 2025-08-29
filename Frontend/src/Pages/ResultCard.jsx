@@ -1,8 +1,10 @@
+import React from "react";
 export default function ResultCard({ result }) {
+  if (!result) return null; // Prevent rendering if result is undefined
+
   return (
     <div className="mt-8 bg-gray-800 p-6 rounded-xl shadow-lg">
       <h2 className="text-xl font-bold mb-4">🔎 Comparison Result</h2>
-
       <div className="mb-4">
         <p className="text-lg">
           Similarity Score:{" "}
@@ -17,7 +19,6 @@ export default function ResultCard({ result }) {
           />
         </div>
       </div>
-
       <div className="grid md:grid-cols-3 gap-6">
         <div>
           <h3 className="font-semibold text-green-400 mb-2">✅ Overlap</h3>
