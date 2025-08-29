@@ -12,7 +12,10 @@ import {
   ListItemText,
   Divider,
   CircularProgress,
+  Collapse,
+  IconButton,
 } from "@mui/material";
+import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function PolicyComparer() {
@@ -21,6 +24,15 @@ export default function PolicyComparer() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [openSections, setOpenSections] = useState({
+    overlap: true,
+    unique1: true,
+    unique2: true,
+  });
+
+  const toggleSection = (section) => {
+    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
 
   const handleCompare = async () => {
     setError("");
@@ -33,9 +45,7 @@ export default function PolicyComparer() {
       });
       setResult(res.data);
     } catch (err) {
-      setError(
-        err.response?.data?.detail || "An error occurred. Please try again."
-      );
+      setError(err.response?.data?.detail || "An error occurred. Please try again.");
     }
     setLoading(false);
   };
@@ -44,7 +54,7 @@ export default function PolicyComparer() {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%)",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
         py: 8,
       }}
     >
@@ -55,12 +65,12 @@ export default function PolicyComparer() {
           transition={{ duration: 0.7 }}
         >
           <Paper
-            elevation={6}
+            elevation={10}
             sx={{
-              p: 5,
+              p: 6,
               borderRadius: 4,
               background: "rgba(255,255,255,0.95)",
-              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.2)",
+              boxShadow: "0 12px 32px rgba(0,0,0,0.2)",
             }}
           >
             <Typography
@@ -69,13 +79,15 @@ export default function PolicyComparer() {
               gutterBottom
               sx={{
                 fontWeight: 700,
-                background: "linear-gradient(90deg, #2193b0, #6dd5ed)",
+                background: "linear-gradient(90deg, #667eea, #764ba2)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
             >
               Policy Comparator
             </Typography>
+
+            {/* Input Fields */}
             <TextField
               label="Policy 1"
               multiline
@@ -98,10 +110,11 @@ export default function PolicyComparer() {
               variant="outlined"
               sx={{ background: "#f7fbfc", borderRadius: 2 }}
             />
+
+            {/* Compare Button */}
             <Box textAlign="center" mt={3}>
               <Button
                 variant="contained"
-                color="primary"
                 size="large"
                 onClick={handleCompare}
                 disabled={!policy1 || !policy2 || loading}
@@ -111,13 +124,15 @@ export default function PolicyComparer() {
                   borderRadius: 3,
                   fontWeight: 600,
                   fontSize: "1.1rem",
-                  background: "linear-gradient(90deg, #2193b0, #6dd5ed)",
-                  boxShadow: "0 4px 20px 0 rgba(33,147,176,0.2)",
+                  background: "linear-gradient(90deg, #667eea, #764ba2)",
+                  boxShadow: "0 6px 20px rgba(102,126,234,0.3)",
                 }}
               >
                 {loading ? <CircularProgress size={26} color="inherit" /> : "Compare"}
               </Button>
             </Box>
+
+            {/* Error */}
             <AnimatePresence>
               {error && (
                 <motion.div
@@ -132,6 +147,8 @@ export default function PolicyComparer() {
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* Result Section */}
             <AnimatePresence>
               {result && (
                 <motion.div
@@ -144,60 +161,87 @@ export default function PolicyComparer() {
                     <Typography
                       variant="h5"
                       align="center"
+                      sx={{ fontWeight: 600, color: "#667eea", letterSpacing: 1 }}
+                    >
+                      Similarity Score:{" "}
+                      {(result.similarity_score * 100).toFixed(2)}%
+                    </Typography>
+
+                    {/* Progress Bar */}
+                    <Box
                       sx={{
-                        fontWeight: 600,
-                        color: "#2193b0",
-                        letterSpacing: 1,
+                        width: "100%",
+                        height: 12,
+                        borderRadius: 6,
+                        background: "#e0e0e0",
+                        overflow: "hidden",
+                        mt: 2,
                       }}
                     >
-                      Similarity Score: {result.similarity_score.toFixed(3)}
-                    </Typography>
-                    <Divider sx={{ my: 2 }} />
-                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                      Overlap Words:
-                    </Typography>
-                    <List dense>
-                      {result.details.overlap.length === 0 && (
-                        <ListItem>
-                          <ListItemText primary="No overlap" />
-                        </ListItem>
-                      )}
-                      {result.details.overlap.map((word, idx) => (
-                        <ListItem key={idx}>
-                          <ListItemText primary={word} />
-                        </ListItem>
-                      ))}
-                    </List>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                      Unique to Policy 1:
-                    </Typography>
-                    <List dense>
-                      {result.details.unique_policy1.length === 0 && (
-                        <ListItem>
-                          <ListItemText primary="None" />
-                        </ListItem>
-                      )}
-                      {result.details.unique_policy1.map((word, idx) => (
-                        <ListItem key={idx}>
-                          <ListItemText primary={word} />
-                        </ListItem>
-                      ))}
-                    </List>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                      Unique to Policy 2:
-                    </Typography>
-                    <List dense>
-                      {result.details.unique_policy2.length === 0 && (
-                        <ListItem>
-                          <ListItemText primary="None" />
-                        </ListItem>
-                      )}
-                      {result.details.unique_policy2.map((word, idx) => (
-                        <ListItem key={idx}>
-                          <ListItemText primary={word} />
-                        </ListItem>
-                      ))}
-                    </List>
+                      <motion.div
+                        style={{ height: "100%", borderRadius: 6, background: "#667eea" }}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${result.similarity_score * 100}%` }}
+                        transition={{ duration: 1, type: "spring" }}
+                      />
+                    </Box>
+
+                    <Divider sx={{ my: 3 }} />
+
+                    {/* Sections: Overlap, Unique1, Unique2 */}
+                    {[
+                      {
+                        key: "overlap",
+                        title: "Overlap Words",
+                        items: result.details.overlap,
+                      },
+                      {
+                        key: "unique1",
+                        title: "Unique to Policy 1",
+                        items: result.details.unique_policy1,
+                      },
+                      {
+                        key: "unique2",
+                        title: "Unique to Policy 2",
+                        items: result.details.unique_policy2,
+                      },
+                    ].map((section) => (
+                      <Box key={section.key} mb={2}>
+                        <Button
+                          onClick={() => toggleSection(section.key)}
+                          endIcon={openSections[section.key] ? <ExpandLess /> : <ExpandMore />}
+                          sx={{
+                            textTransform: "none",
+                            fontWeight: 600,
+                            color: "#333",
+                            mb: 1,
+                          }}
+                        >
+                          {section.title}
+                        </Button>
+                        <Collapse in={openSections[section.key]}>
+                          <List dense>
+                            {section.items.length === 0 && (
+                              <ListItem>
+                                <ListItemText primary="None" sx={{ fontStyle: "italic" }} />
+                              </ListItem>
+                            )}
+                            {section.items.map((word, idx) => (
+                              <ListItem
+                                key={idx}
+                                sx={{
+                                  borderRadius: 1,
+                                  "&:hover": { background: "#f0f0f0", transform: "scale(1.02)" },
+                                  transition: "all 0.2s",
+                                }}
+                              >
+                                <ListItemText primary={word} />
+                              </ListItem>
+                            ))}
+                          </List>
+                        </Collapse>
+                      </Box>
+                    ))}
                   </Box>
                 </motion.div>
               )}
