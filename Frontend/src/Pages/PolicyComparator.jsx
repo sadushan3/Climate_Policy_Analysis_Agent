@@ -23,7 +23,7 @@ export default function PolicyComparer() {
     setError("");
     setResult(null);
     try {
-      const res = await axios.post("http://localhost:8000/compare_policy", {
+      const res = await axios.post("http://127.0.0.1:8000/api/compare_policy", {
         policy1,
         policy2,
       });
