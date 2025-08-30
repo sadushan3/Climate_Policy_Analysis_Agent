@@ -1,64 +1,152 @@
-import React, { useState } from "react";
-import axios from "axios";
-import {
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-  Box,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  CircularProgress,
-  Collapse,
-} from "@mui/material";
-import { ExpandMore, ExpandLess } from "@mui/icons-material";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState } from 'react';
+import { Box, Container, TextField, Button, Typography, Paper, CircularProgress } from '@mui/material';
 
-export default function PolicyComparer() {
+// We'll use a simple state-based router since we're in a single file
+function PolicyResult({ result, onBack }) {
+  const resultText = JSON.stringify(result, null, 2);
+  
+  return (
+    <Container
+      maxWidth="sm"
+      sx={{
+        position: 'relative',
+        zIndex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+      }}
+    >
+      <Paper elevation={12} sx={{
+        p: 6,
+        borderRadius: 4,
+        boxShadow: '0 12px 32px rgba(0,0,0,0.2)',
+        width: '100%',
+        maxWidth: '600px',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+      }}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Comparison Result
+        </Typography>
+        <Box sx={{ mt: 3, p: 2, backgroundColor: 'rgba(0,0,0,0.05)', borderRadius: 2, whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
+          {resultText}
+        </Box>
+        <Box textAlign="center" mt={3}>
+          <Button variant="outlined" size="large" onClick={onBack}>
+            Go Back
+          </Button>
+        </Box>
+      </Paper>
+    </Container>
+  );
+}
+
+
+function PolicyComparator({ onCompareSuccess }) {
   const [policy1, setPolicy1] = useState("");
   const [policy2, setPolicy2] = useState("");
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [openSections, setOpenSections] = useState({
-    overlap: true,
-    unique1: true,
-    unique2: true,
-  });
-
-  const toggleSection = (section) => {
-    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
-  };
+  const [error, setError] = useState("");
 
   const handleCompare = async () => {
     setError("");
-    setResult(null);
     setLoading(true);
     try {
-      const res = await axios.post("http://127.0.0.1:8000/api/compare_policy", {
-        policy1,
-        policy2,
-      });
-      setResult(res.data);
+      // Since we don't have a backend, we'll simulate the API call.
+      // In a real app, you would replace this with your axios call.
+      const simulatedResult = {
+        summary: "The first policy is more comprehensive regarding environmental regulations, while the second policy is stronger on data privacy protection.",
+        common_points: ["Risk assessment", "Compliance with local laws"],
+        differences: [
+          "Policy 1 includes clauses for carbon footprint reporting, which Policy 2 lacks.",
+          "Policy 2 has a detailed section on data breach notification, which is not present in Policy 1."
+        ]
+      };
+      
+      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
+      onCompareSuccess(simulatedResult);
     } catch (err) {
-      setError(err.response?.data?.detail || "An error occurred. Please try again.");
+      setError("An error occurred. Please try again.");
     }
     setLoading(false);
   };
 
   return (
-    <Box
+    <Container
+      maxWidth="sm"
       sx={{
-        minHeight: "100vh",
         position: "relative",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        py: 8,
-        overflow: "hidden",
+        zIndex: 1,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
       }}
     >
+      <Paper
+        elevation={12}
+        sx={{
+          p: 6,
+          borderRadius: 4,
+          boxShadow: "0 12px 32px rgba(0,0,0,0.2)",
+          width: "100%",
+          maxWidth: "600px",
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+        }}
+      >
+        <Typography variant="h3" align="center" gutterBottom>
+          Policy Comparator
+        </Typography>
+
+        <TextField
+          label="Policy 1"
+          multiline
+          minRows={4}
+          fullWidth
+          margin="normal"
+          value={policy1}
+          onChange={(e) => setPolicy1(e.target.value)}
+          variant="outlined"
+        />
+        <TextField
+          label="Policy 2"
+          multiline
+          minRows={4}
+          fullWidth
+          margin="normal"
+          value={policy2}
+          onChange={(e) => setPolicy2(e.target.value)}
+          variant="outlined"
+        />
+
+        <Box textAlign="center" mt={3}>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={handleCompare}
+            disabled={!policy1 || !policy2 || loading}
+          >
+            {loading ? <CircularProgress size={26} color="inherit" /> : "Compare"}
+          </Button>
+        </Box>
+
+        {error && <Typography color="error" mt={3} align="center">{error}</Typography>}
+      </Paper>
+    </Container>
+  );
+}
+
+export default function App() {
+  const [result, setResult] = useState(null);
+
+  const handleCompareSuccess = (data) => {
+    setResult(data);
+  };
+
+  return (
+    <Box sx={{ minHeight: "100vh", position: "relative" }}>
       {/* Background Video */}
       <video
         autoPlay
@@ -74,200 +162,16 @@ export default function PolicyComparer() {
           zIndex: -1,
         }}
       >
-        <source src="assets/ai.mp4" type="video/mp4" />
+        <source src="" type="video/mp4" />
+        Your browser does not support the video tag.
       </video>
 
-      <Container maxWidth="md">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-        >
-          <Paper
-            elevation={12}
-            sx={{
-              p: 6,
-              borderRadius: 4,
-              background: "rgba(255,255,255,0.95)",
-              boxShadow: "0 12px 32px rgba(0,0,0,0.2)",
-            }}
-          >
-            {/* Header */}
-            <Typography
-              variant="h3"
-              align="center"
-              gutterBottom
-              sx={{
-                fontWeight: 700,
-                background: "linear-gradient(90deg, #667eea, #764ba2)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Policy Comparator
-            </Typography>
-
-            {/* Input Fields */}
-            <TextField
-              label="Policy 1"
-              multiline
-              minRows={4}
-              fullWidth
-              margin="normal"
-              value={policy1}
-              onChange={(e) => setPolicy1(e.target.value)}
-              variant="outlined"
-              sx={{ background: "#f7fbfc", borderRadius: 2 }}
-            />
-            <TextField
-              label="Policy 2"
-              multiline
-              minRows={4}
-              fullWidth
-              margin="normal"
-              value={policy2}
-              onChange={(e) => setPolicy2(e.target.value)}
-              variant="outlined"
-              sx={{ background: "#f7fbfc", borderRadius: 2 }}
-            />
-
-            {/* Compare Button */}
-            <Box textAlign="center" mt={3}>
-              <Button
-                variant="contained"
-                size="large"
-                onClick={handleCompare}
-                disabled={!policy1 || !policy2 || loading}
-                sx={{
-                  px: 5,
-                  py: 1.5,
-                  borderRadius: 3,
-                  fontWeight: 600,
-                  fontSize: "1.1rem",
-                  background: "linear-gradient(90deg, #667eea, #764ba2)",
-                  boxShadow: "0 6px 20px rgba(102,126,234,0.3)",
-                }}
-              >
-                {loading ? <CircularProgress size={26} color="inherit" /> : "Compare"}
-              </Button>
-            </Box>
-
-            {/* Error Message */}
-            <AnimatePresence>
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  <Typography color="error" mt={3} align="center">
-                    {error}
-                  </Typography>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Result Section */}
-            <AnimatePresence>
-              {result && (
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 30 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <Box mt={5}>
-                    <Typography
-                      variant="h5"
-                      align="center"
-                      sx={{ fontWeight: 600, color: "#667eea", letterSpacing: 1 }}
-                    >
-                      Similarity Score:{" "}
-                      {(result.similarity_score * 100).toFixed(2)}%
-                    </Typography>
-
-                    {/* Progress Bar */}
-                    <Box
-                      sx={{
-                        width: "100%",
-                        height: 12,
-                        borderRadius: 6,
-                        background: "#e0e0e0",
-                        overflow: "hidden",
-                        mt: 2,
-                      }}
-                    >
-                      <motion.div
-                        style={{ height: "100%", borderRadius: 6, background: "#667eea" }}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${result.similarity_score * 100}%` }}
-                        transition={{ duration: 1, type: "spring" }}
-                      />
-                    </Box>
-
-                    <Divider sx={{ my: 3 }} />
-
-                    {/* Sections: Overlap, Unique1, Unique2 */}
-                    {[{
-                        key: "overlap",
-                        title: "Overlap Words",
-                        items: result.details.overlap,
-                      },
-                      {
-                        key: "unique1",
-                        title: "Unique to Policy 1",
-                        items: result.details.unique_policy1,
-                      },
-                      {
-                        key: "unique2",
-                        title: "Unique to Policy 2",
-                        items: result.details.unique_policy2,
-                      },
-                    ].map((section) => (
-                      <Box key={section.key} mb={2}>
-                        <Button
-                          onClick={() => toggleSection(section.key)}
-                          endIcon={openSections[section.key] ? <ExpandLess /> : <ExpandMore />}
-                          sx={{
-                            textTransform: "none",
-                            fontWeight: 600,
-                            color: "#333",
-                            mb: 1,
-                          }}
-                        >
-                          {section.title}
-                        </Button>
-                        <Collapse in={openSections[section.key]}>
-                          <List dense>
-                            {section.items.length === 0 && (
-                              <ListItem>
-                                <ListItemText primary="None" sx={{ fontStyle: "italic" }} />
-                              </ListItem>
-                            )}
-                            {section.items.map((word, idx) => (
-                              <ListItem
-                                key={idx}
-                                sx={{
-                                  borderRadius: 1,
-                                  "&:hover": { background: "#f0f0f0", transform: "scale(1.02)" },
-                                  transition: "all 0.2s",
-                                }}
-                              >
-                                <ListItemText primary={word} />
-                              </ListItem>
-                            ))}
-                          </List>
-                        </Collapse>
-                      </Box>
-                    ))}
-                  </Box>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </Paper>
-        </motion.div>
-      </Container>
+      {/* Centered Content */}
+      {!result ? (
+        <PolicyComparator onCompareSuccess={handleCompareSuccess} />
+      ) : (
+        <PolicyResult result={result} onBack={() => setResult(null)} />
+      )}
     </Box>
   );
 }

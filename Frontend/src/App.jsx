@@ -1,15 +1,18 @@
-import React from 'react'
-import PolicyComparator from './pages/PolicyComparator'
-import ResultCard from './pages/Resultcard'
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PolicyComparator from './pages/PolicyComparator';
+import ResultCard from './pages/Resultcard';
+import './App.css';
 
 function App() {
   return (
-    <div>
-      <PolicyComparator />
-      <ResultCard />
-    </div>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<PolicyComparator />} />
+        <Route path="/result" element={<ResultCard />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
