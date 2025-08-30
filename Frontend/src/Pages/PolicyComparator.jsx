@@ -13,7 +13,6 @@ import {
   Divider,
   CircularProgress,
   Collapse,
-  IconButton,
 } from "@mui/material";
 import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import { motion, AnimatePresence } from "framer-motion";
@@ -54,18 +53,38 @@ export default function PolicyComparer() {
     <Box
       sx={{
         minHeight: "100vh",
+        position: "relative",
         background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
         py: 8,
+        overflow: "hidden",
       }}
     >
-      <Container maxWidth="sm">
+      {/* Background Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: -1,
+        }}
+      >
+        <source src="assets/ai.mp4" type="video/mp4" />
+      </video>
+
+      <Container maxWidth="md">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
           <Paper
-            elevation={10}
+            elevation={12}
             sx={{
               p: 6,
               borderRadius: 4,
@@ -73,6 +92,7 @@ export default function PolicyComparer() {
               boxShadow: "0 12px 32px rgba(0,0,0,0.2)",
             }}
           >
+            {/* Header */}
             <Typography
               variant="h3"
               align="center"
@@ -132,7 +152,7 @@ export default function PolicyComparer() {
               </Button>
             </Box>
 
-            {/* Error */}
+            {/* Error Message */}
             <AnimatePresence>
               {error && (
                 <motion.div
@@ -189,8 +209,7 @@ export default function PolicyComparer() {
                     <Divider sx={{ my: 3 }} />
 
                     {/* Sections: Overlap, Unique1, Unique2 */}
-                    {[
-                      {
+                    {[{
                         key: "overlap",
                         title: "Overlap Words",
                         items: result.details.overlap,
