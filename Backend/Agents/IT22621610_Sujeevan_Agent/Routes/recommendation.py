@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from models.schemas import WeatherQuery, RecommendationResponse
-from utils.recommender import recommend
+from Utils.recommender import recommend
 
 router = APIRouter(prefix="/recommendations", tags=["recommendations"])
 
