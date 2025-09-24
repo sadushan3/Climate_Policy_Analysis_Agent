@@ -130,4 +130,34 @@ async def upload_multiple_documents(
         )
     
     responses = []
+
+    for file in files:
+        try:
+            # Check file type
+            content_type = file.content_type
+            if content_type not in settings.ALLOWED_FILE_TYPES:
+                responses.append(DocumentResponse(
+                    success=False,
+                    message=f"Skipped {file.filename}: Unsupported file type {content_type}",
+                    error=f"Unsupported file type: {content_type}"
+                ))
+                continue
+            
+            # Generate a unique filename
+            file_extension = Path(file.filename).suffix.lower()
+            unique_filename = f"{uuid.uuid4()}{file_extension}"
+            file_path = Path(settings.UPLOAD_DIR) / unique_filename
+            
+            # Save the uploaded file
+            await save_upload_file(file, file_path)
+            
+            # Process the document
+            document_data = document_processor.process_document(file_path)
+            
+            # Create response
+            responses.append(DocumentResponse(
+                success=True,
+                message=f"Successfully processed {file.filename}",
+                document=Document(**document_data)
+            ))
     
