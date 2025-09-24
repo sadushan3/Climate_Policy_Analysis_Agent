@@ -207,4 +207,23 @@ class DocumentProcessingPipeline:
                     logger.error(f"Error processing {doc_file}: {e}")
                     continue
                     
-        return processed_docs    
+        return processed_docs  
+
+      def save_as_json(self, document_data: Dict[str, Any], output_path: Optional[Path] = None) -> Path:
+        """
+        Save processed document data as JSON.
+        
+        Args:
+            document_data: Processed document data
+            output_path: Optional custom output path
+            
+        Returns:
+            Path to the saved JSON file
+        """
+        if output_path is None:
+            output_path = self.output_dir / f"{document_data['id']}.json"
+            
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(document_data, f, indent=2, ensure_ascii=False)
+            
+        return output_path  
