@@ -73,3 +73,42 @@ async def upload_document(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"File type {content_type} not supported. Please upload a PDF or DOCX file."
         )
+
+    try:
+        # Generate a unique filename
+        file_extension = Path(file.filename).suffix.lower()
+        unique_filename = f"{uuid.uuid4()}{file_extension}"
+        file_path = Path(settings.UPLOAD_DIR) / unique_filename
+        
+        # Save the uploaded file
+        await save_upload_file(file, file_path)
+        
+        # Process the document through the pipeline
+        document_data = pipeline.process_document(file_path)
+        
+        # Save the processed document as JSON
+        json_path = pipeline.save_as_json(document_data)
+        
+        # Create response
+        response = DocumentResponse(
+            success=True,
+            message=f"Successfully processed {file.filename}",
+            document=Document(**document_data),
+            metadata={
+                'json_path': str(json_path),
+                'original_filename': file.filename
+            }
+        )
+        
+        return response
+        
+    except Exception as e:
+        logger.error(f"Error processing document: {str(e)}")
+        # Clean up the file if it was partially uploaded
+        if 'file_path' in locals() and file_path.exists():
+            file_path.unlink()
+            
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error processing document: {str(e)}"
+        )
