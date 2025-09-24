@@ -31,3 +31,76 @@ class DocumentProcessingPipeline:
         
         # Create output directory if it doesn't exist
         self.output_dir.mkdir(parents=True, exist_ok=True)
+
+      def process_document(
+        self, 
+        file_path: Path,
+        options: Optional[DocumentProcessingOptions] = None
+    ) -> Dict[str, Any]:
+        """
+        Process a single document through the pipeline.
+        
+        Args:
+            file_path: Path to the document file
+            options: Optional processing options
+            
+        Returns:
+            Dictionary containing the processed document data
+        """
+        if options is None:
+            options = DocumentProcessingOptions()
+            
+        try:
+            # Clean and process the document
+            cleaned_data = self.document_cleaner.clean_document(file_path)
+            
+            # Generate a unique document ID
+            doc_id = self._generate_document_id(file_path, cleaned_data)
+            
+            # Get metadata from cleaned data
+            metadata = cleaned_data.get('metadata', {})
+            metadata.update({
+                'title': file_path.stem,
+                'file_type': file_path.suffix.lstrip('.').lower() or 'pdf'
+            })
+            
+            # Process document sections with section detection enabled
+            options.extract_sections = True  # Ensure section extraction is enabled
+            sections = self._process_sections(cleaned_data.get('sections', {}), options)
+            
+            # Initialize empty keywords list as we're not extracting them
+            keywords = []
+            
+            # Build the document data structure with proper section handling
+            document_data = {
+                'id': doc_id,
+                'file_name': file_path.name,
+                'file_size': os.path.getsize(file_path),
+                'file_type': metadata.get('file_type', 'pdf'),
+                'text': cleaned_data.get('text', ''),
+                'sections': [
+                    {
+                        'title': title if title != 'content' else 'Document Content',
+                        'content': content,
+                        'start_line': 0,  # These can be updated if line tracking is needed
+                        'end_line': len(content.split('\n'))
+                    }
+                    for title, content in sections.items()
+                ] if sections else [
+                    {
+                        'title': 'Document Content',
+                        'content': cleaned_data.get('text', ''),
+                        'start_line': 0,
+                        'end_line': len(cleaned_data.get('text', '').split('\n'))
+                    }
+                ],
+                'metadata': metadata,
+                'keywords': keywords,
+                'processing_date': datetime.utcnow().isoformat()
+            }
+            
+            return document_data
+            
+        except Exception as e:
+            logger.error(f"Error processing document {file_path}: {e}")
+            raise  
