@@ -65,3 +65,11 @@ async def upload_document(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No file provided"
         )
+
+    # Check file type
+    content_type = file.content_type
+    if content_type not in settings.ALLOWED_FILE_TYPES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"File type {content_type} not supported. Please upload a PDF or DOCX file."
+        )
