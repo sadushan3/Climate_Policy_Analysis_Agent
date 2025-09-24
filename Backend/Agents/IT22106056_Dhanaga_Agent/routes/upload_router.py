@@ -189,4 +189,17 @@ async def get_document(document_id: str):
         content={"detail": "Not implemented"}
     )
 
+@router.get("/", response_model=DocumentListResponse)
+async def list_documents(limit: int = 10, skip: int = 0):
+    """
+    List all processed documents with pagination.
+    
+    Note: In a real implementation, this would query a database.
+    """
+    # This is a placeholder implementation
+    # In a real app, you would fetch documents from a database with pagination
+    return JSONResponse(
+        status_code=status.HTTP_501_NOT_IMPLEMENTED,
+        content={"detail": "Not implemented"}
+    )
     
