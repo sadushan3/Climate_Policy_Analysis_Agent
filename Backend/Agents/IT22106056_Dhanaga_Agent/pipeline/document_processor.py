@@ -31,8 +31,8 @@ class DocumentProcessingPipeline:
         
         # Create output directory if it doesn't exist
         self.output_dir.mkdir(parents=True, exist_ok=True)
-
-      def process_document(
+    
+    def process_document(
         self, 
         file_path: Path,
         options: Optional[DocumentProcessingOptions] = None
@@ -103,9 +103,9 @@ class DocumentProcessingPipeline:
             
         except Exception as e:
             logger.error(f"Error processing document {file_path}: {e}")
-            raise  
-
-      def _generate_document_id(self, file_path: Path, cleaned_data: Dict[str, Any]) -> str:
+            raise
+    
+    def _generate_document_id(self, file_path: Path, cleaned_data: Dict[str, Any]) -> str:
         """Generate a unique ID for the document."""
         # Use a combination of file properties and content hash
         content = f"{file_path.name}{file_path.stat().st_size}"
@@ -113,8 +113,8 @@ class DocumentProcessingPipeline:
             content += cleaned_data['text'][:1000]  # Use first 1000 chars for content
         
         return hashlib.md5(content.encode('utf-8')).hexdigest()
-
-      def _process_sections(
+    
+    def _process_sections(
         self, 
         sections: Dict[str, str],
         options: DocumentProcessingOptions
@@ -155,9 +155,9 @@ class DocumentProcessingPipeline:
         if not processed_sections:
             return {'Document Content': '\n\n'.join(sections.values())}
             
-        return processed_sections 
-
-      def save_as_json(self, document_data: Dict[str, Any]) -> Path:
+        return processed_sections
+    
+    def save_as_json(self, document_data: Dict[str, Any]) -> Path:
         """
         Save the processed document data as a JSON file.
         
@@ -181,9 +181,9 @@ class DocumentProcessingPipeline:
             
         except Exception as e:
             logger.error(f"Error saving document to JSON: {e}")
-            raise 
-
-      def process_directory(self, input_dir: Optional[Path] = None) -> List[Dict[str, Any]]:
+            raise
+    
+    def process_directory(self, input_dir: Optional[Path] = None) -> List[Dict[str, Any]]:
         """
         Process all documents in a directory.
         
@@ -207,28 +207,9 @@ class DocumentProcessingPipeline:
                     logger.error(f"Error processing {doc_file}: {e}")
                     continue
                     
-        return processed_docs  
-
-      def save_as_json(self, document_data: Dict[str, Any], output_path: Optional[Path] = None) -> Path:
-        """
-        Save processed document data as JSON.
-        
-        Args:
-            document_data: Processed document data
-            output_path: Optional custom output path
-            
-        Returns:
-            Path to the saved JSON file
-        """
-        if output_path is None:
-            output_path = self.output_dir / f"{document_data['id']}.json"
-            
-        with open(output_path, 'w', encoding='utf-8') as f:
-            json.dump(document_data, f, indent=2, ensure_ascii=False)
-            
-        return output_path  
-
-      def save_as_json(self, document_data: Dict[str, Any], output_path: Optional[Path] = None) -> Path:
+        return processed_docs
+    
+    def save_as_json(self, document_data: Dict[str, Any], output_path: Optional[Path] = None) -> Path:
         """
         Save processed document data as JSON.
         
@@ -246,3 +227,41 @@ class DocumentProcessingPipeline:
             json.dump(document_data, f, indent=2, ensure_ascii=False)
             
         return output_path
+    
+    def process_directory(self, input_dir: Optional[Path] = None) -> list:
+        """
+        Process all documents in a directory.
+        
+        Args:
+            input_dir: Directory containing documents to process
+            
+        Returns:
+            List of processed document data
+        """
+        if input_dir is None:
+            input_dir = self.upload_dir
+            
+        input_dir = Path(input_dir)
+        processed_docs = []
+        
+        # Supported file extensions
+        extensions = {'.pdf', '.docx'}
+        
+        for file_path in input_dir.glob('*'):
+            if file_path.suffix.lower() in extensions:
+                try:
+                    # Process document
+                    document_data = self.process_document(file_path)
+                    
+                    # Save as JSON
+                    json_path = self.save_as_json(document_data)
+                    processed_docs.append({
+                        'original_file': str(file_path),
+                        'json_path': str(json_path),
+                        'document_id': document_data['id']
+                    })
+                    
+                except Exception as e:
+                    logger.error(f"Failed to process {file_path}: {str(e)}")
+        
+        return processed_docs
