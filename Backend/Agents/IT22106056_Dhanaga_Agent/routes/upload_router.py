@@ -160,4 +160,18 @@ async def upload_multiple_documents(
                 message=f"Successfully processed {file.filename}",
                 document=Document(**document_data)
             ))
+
+          except Exception as e:
+            logger.error(f"Error processing document {file.filename}: {str(e)}")
+            # Clean up the file if it was partially uploaded
+            if 'file_path' in locals() and file_path.exists():
+                file_path.unlink()
+                
+            responses.append(DocumentResponse(
+                success=False,
+                message=f"Failed to process {file.filename}",
+                error=str(e)
+            ))
+    
+    return responses
     
