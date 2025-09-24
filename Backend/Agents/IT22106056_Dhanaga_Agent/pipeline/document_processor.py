@@ -104,3 +104,12 @@ class DocumentProcessingPipeline:
         except Exception as e:
             logger.error(f"Error processing document {file_path}: {e}")
             raise  
+
+      def _generate_document_id(self, file_path: Path, cleaned_data: Dict[str, Any]) -> str:
+        """Generate a unique ID for the document."""
+        # Use a combination of file properties and content hash
+        content = f"{file_path.name}{file_path.stat().st_size}"
+        if 'text' in cleaned_data and len(cleaned_data['text']) > 0:
+            content += cleaned_data['text'][:1000]  # Use first 1000 chars for content
+        
+        return hashlib.md5(content.encode('utf-8')).hexdigest()      
