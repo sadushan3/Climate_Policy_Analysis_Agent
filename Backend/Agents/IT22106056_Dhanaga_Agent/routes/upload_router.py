@@ -112,3 +112,22 @@ async def upload_document(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error processing document: {str(e)}"
         )
+
+@router.post("/upload/batch/", response_model=List[DocumentResponse], status_code=status.HTTP_201_CREATED)
+async def upload_multiple_documents(
+    files: List[UploadFile] = File(..., description="Multiple document files to upload (PDF or DOCX)"),
+    options: Optional[DocumentProcessingOptions] = None
+):
+    """
+    Upload and process multiple documents in a single request.
+    
+    Supported file types: PDF, DOCX
+    """
+    if not files or len(files) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No files provided"
+        )
+    
+    responses = []
+    
