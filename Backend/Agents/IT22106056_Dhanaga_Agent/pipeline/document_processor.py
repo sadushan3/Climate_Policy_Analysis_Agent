@@ -155,4 +155,30 @@ class DocumentProcessingPipeline:
         if not processed_sections:
             return {'Document Content': '\n\n'.join(sections.values())}
             
-        return processed_sections      
+        return processed_sections 
+
+      def save_as_json(self, document_data: Dict[str, Any]) -> Path:
+        """
+        Save the processed document data as a JSON file.
+        
+        Args:
+            document_data: Processed document data
+            
+        Returns:
+            Path to the saved JSON file
+        """
+        try:
+            # Create a filename based on document title or ID
+            doc_id = document_data.get('id', 'document')
+            output_file = self.output_dir / f"{doc_id}.json"
+            
+            # Save as pretty-printed JSON
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(document_data, f, indent=2, ensure_ascii=False)
+                
+            logger.info(f"Saved processed document to {output_file}")
+            return output_file
+            
+        except Exception as e:
+            logger.error(f"Error saving document to JSON: {e}")
+            raise     
