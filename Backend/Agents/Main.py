@@ -2,7 +2,27 @@ from fastapi import FastAPI
 from Backend.Agents.IT22180520_Sadushan_Agent.Routes import Routes
 from fastapi.middleware.cors import CORSMiddleware
 import os
+
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from fastapi import FastAPI
+from routes import router
+
+
+app = FastAPI(title="Document Analyzer Agent")
+
+# include API routes
+app.include_router(router)
+
+@app.get("/")
+def root():
+    return {"message": "Welcome to Document Analyzer Agent"}  
+
 from dotenv import load_dotenv
+
 
 load_dotenv()
 
