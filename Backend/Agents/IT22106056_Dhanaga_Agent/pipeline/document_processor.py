@@ -112,4 +112,47 @@ class DocumentProcessingPipeline:
         if 'text' in cleaned_data and len(cleaned_data['text']) > 0:
             content += cleaned_data['text'][:1000]  # Use first 1000 chars for content
         
-        return hashlib.md5(content.encode('utf-8')).hexdigest()      
+        return hashlib.md5(content.encode('utf-8')).hexdigest()
+
+      def _process_sections(
+        self, 
+        sections: Dict[str, str],
+        options: DocumentProcessingOptions
+    ) -> Dict[str, str]:
+        """
+        Process document sections with enhanced section detection.
+        
+        Args:
+            sections: Dictionary of sections from the document cleaner
+            options: Processing options
+            
+        Returns:
+            Processed sections with improved structure
+        """
+        if not options.extract_sections:
+            return {'content': '\n\n'.join(sections.values())}
+            
+        # If no sections were detected, return the entire content as one section
+        if not sections:
+            return {'content': '\n\n'.join(sections.values()) if sections else ''}
+            
+        # Process each section to clean up titles and content
+        processed_sections = {}
+        for title, content in sections.items():
+            # Clean up section titles
+            clean_title = title.strip()
+            if not clean_title or clean_title.lower() == 'content':
+                clean_title = 'Document Content'
+            
+            # Clean up section content
+            clean_content = content.strip()
+            
+            # Only include non-empty sections
+            if clean_content:
+                processed_sections[clean_title] = clean_content
+        
+        # If we ended up with no valid sections, return the entire content
+        if not processed_sections:
+            return {'Document Content': '\n\n'.join(sections.values())}
+            
+        return processed_sections      
