@@ -1,0 +1,15 @@
+{
+  "pipeline_steps": [
+    "pre"
+  ],
+  "n_rows": 300,
+  "n_cols": 6,
+  "feature_columns": [
+    "location",
+    "month",
+    "temperature_c",
+    "humidity_pct",
+    "wind_kmh"
+  ],
+  "target_column": "condition"
+}

@@ -1,0 +1,11 @@
+location,month,temperature_c,humidity_pct,wind_kmh,condition
+Jaffna,11,29.4,88,8.3,Cloudy
+Trincomalee,4,30.6,78,8.3,Sunny
+Jaffna,6,34.4,90,2.2,Sunny
+Jaffna,3,31.8,76,11.9,Cloudy
+Trincomalee,3,28.4,94,3.9,Sunny
+Kandy,4,34.4,82,7.6,Rain
+Galle,1,30.5,62,12.8,Cloudy
+Trincomalee,2,24.1,77,15.5,Thunderstorm
+Jaffna,9,30.8,91,13.8,Rain
+Trincomalee,9,30.3,66,9.9,Sunny
