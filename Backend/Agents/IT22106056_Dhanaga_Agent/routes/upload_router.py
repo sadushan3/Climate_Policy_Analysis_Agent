@@ -174,4 +174,19 @@ async def upload_multiple_documents(
             ))
     
     return responses
+
+@router.get("/{document_id}", response_model=DocumentResponse)
+async def get_document(document_id: str):
+    """
+    Retrieve a processed document by its ID.
+    
+    Note: In a real implementation, this would fetch from a database.
+    """
+    # This is a placeholder implementation
+    # In a real app, you would fetch the document from a database
+    return JSONResponse(
+        status_code=status.HTTP_501_NOT_IMPLEMENTED,
+        content={"detail": "Not implemented"}
+    )
+
     
