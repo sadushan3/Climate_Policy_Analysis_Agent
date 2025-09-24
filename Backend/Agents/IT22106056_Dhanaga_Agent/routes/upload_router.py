@@ -25,3 +25,9 @@ router = APIRouter(
     tags=["documents"],
     responses={404: {"description": "Not found"}},
 )
+
+# Initialize document processing pipeline
+pipeline = DocumentProcessingPipeline(
+    upload_dir=settings.UPLOAD_DIR,
+    output_dir=os.path.join(settings.UPLOAD_DIR, 'processed')
+)
