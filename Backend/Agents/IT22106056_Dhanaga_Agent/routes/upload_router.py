@@ -49,3 +49,19 @@ async def save_upload_file(upload_file: UploadFile, destination: Path) -> Path:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Could not save file: {str(e)}"
         )
+
+@router.post("/upload/", response_model=DocumentResponse, status_code=status.HTTP_201_CREATED)
+async def upload_document(
+    file: UploadFile = File(..., description="The document file to upload (PDF or DOCX)"),
+    options: Optional[DocumentProcessingOptions] = None
+):
+    """
+    Upload and process a single document.
+    
+    Supported file types: PDF, DOCX
+    """
+    if not file:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No file provided"
+        )
