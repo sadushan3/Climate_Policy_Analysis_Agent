@@ -31,3 +31,21 @@ pipeline = DocumentProcessingPipeline(
     upload_dir=settings.UPLOAD_DIR,
     output_dir=os.path.join(settings.UPLOAD_DIR, 'processed')
 )
+
+async def save_upload_file(upload_file: UploadFile, destination: Path) -> Path:
+    """Save an uploaded file to the specified destination."""
+    try:
+        # Create the directory if it doesn't exist
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Save the file in chunks to handle large files
+        with destination.open("wb") as buffer:
+            shutil.copyfileobj(upload_file.file, buffer)
+            
+        return destination
+    except Exception as e:
+        logger.error(f"Error saving file {upload_file.filename}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Could not save file: {str(e)}"
+        )
