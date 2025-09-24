@@ -181,4 +181,30 @@ class DocumentProcessingPipeline:
             
         except Exception as e:
             logger.error(f"Error saving document to JSON: {e}")
-            raise     
+            raise 
+
+      def process_directory(self, input_dir: Optional[Path] = None) -> List[Dict[str, Any]]:
+        """
+        Process all documents in a directory.
+        
+        Args:
+            input_dir: Directory containing documents to process. If None, uses upload_dir.
+            
+        Returns:
+            List of processed document data
+        """
+        input_dir = Path(input_dir) if input_dir else self.upload_dir
+        processed_docs = []
+        
+        # Process all supported document types
+        for ext in ['.pdf', '.docx', '.txt']:
+            for doc_file in input_dir.glob(f'*{ext}'):
+                try:
+                    doc_data = self.process_document(doc_file)
+                    self.save_as_json(doc_data)
+                    processed_docs.append(doc_data)
+                except Exception as e:
+                    logger.error(f"Error processing {doc_file}: {e}")
+                    continue
+                    
+        return processed_docs    
