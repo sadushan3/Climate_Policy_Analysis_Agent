@@ -1,3 +1,4 @@
+from IT22106056_Dhanaga_Agent.routes import upload_router
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -7,11 +8,6 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 
-from app.routers import upload_router
-from app.utils.config import settings
-
-# Create upload directory if it doesn't exist
-os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
 
 app = FastAPI(
     title="Climate Policy Analysis API",
