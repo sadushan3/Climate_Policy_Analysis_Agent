@@ -7,7 +7,6 @@ from pathlib import Path
 import shutil
 import logging
 
-from ..utils.config import settings
 from ..pipeline.document_processor import DocumentProcessingPipeline
 from ..models.document import (
     Document, 
@@ -20,45 +19,51 @@ from ..models.document import (
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Local upload directory (relative to this agent)
+BASE_DIR = Path(__file__).resolve().parents[2]  # Backend/Agents/
+UPLOAD_DIR = BASE_DIR / 'uploads'
+PROCESSED_DIR = UPLOAD_DIR / 'processed'
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+
+# Initialize document processing pipeline
+pipeline = DocumentProcessingPipeline(
+    upload_dir=str(UPLOAD_DIR),
+    output_dir=str(PROCESSED_DIR)
+)
+
+async def save_upload_file(upload_file: UploadFile, destination: Path) -> Path:
+    """Save an uploaded file to the specified destination."""
+    try:
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        with destination.open("wb") as buffer:
+            import shutil
+            shutil.copyfileobj(upload_file.file, buffer)
+        return destination
+    except Exception as e:
+        import logging
+        from fastapi import HTTPException, status
+        logging.getLogger(__name__).error(f"Error saving file {upload_file.filename}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Could not save file: {str(e)}"
+        )
+
 router = APIRouter(
     prefix="/documents",  # Remove /api/v1 from here
     tags=["documents"],
     responses={404: {"description": "Not found"}},
 )
 
-# Initialize document processing pipeline
-pipeline = DocumentProcessingPipeline(
-    upload_dir=settings.UPLOAD_DIR,
-    output_dir=os.path.join(settings.UPLOAD_DIR, 'processed')
-)
-
-async def save_upload_file(upload_file: UploadFile, destination: Path) -> Path:
-    """Save an uploaded file to the specified destination."""
-    try:
-        # Create the directory if it doesn't exist
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        
-        # Save the file in chunks to handle large files
-        with destination.open("wb") as buffer:
-            shutil.copyfileobj(upload_file.file, buffer)
-            
-        return destination
-    except Exception as e:
-        logger.error(f"Error saving file {upload_file.filename}: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Could not save file: {str(e)}"
-        )
-
 @router.post("/upload/", response_model=DocumentResponse, status_code=status.HTTP_201_CREATED)
 async def upload_document(
-    file: UploadFile = File(..., description="The document file to upload (PDF or DOCX)"),
+    file: UploadFile = File(..., description="The document file to upload (PDF only)"),
     options: Optional[DocumentProcessingOptions] = None
 ):
     """
     Upload and process a single document.
     
-    Supported file types: PDF, DOCX
+    Supported file types: PDF
     """
     if not file:
         raise HTTPException(
@@ -66,41 +71,44 @@ async def upload_document(
             detail="No file provided"
         )
 
-    # Check file type
-    content_type = file.content_type
-    if content_type not in settings.ALLOWED_FILE_TYPES:
+    # Allowed file types
+    allowed_exts = {".pdf", ".docx"}
+    allowed_mimes = {
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    }
+
+    # Check file type (PDF or DOCX)
+    ext = Path(file.filename).suffix.lower()
+    mime = (file.content_type or "").lower()
+    if ext not in allowed_exts or mime not in allowed_mimes:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"File type {content_type} not supported. Please upload a PDF or DOCX file."
+            detail=f"Unsupported file type: ext={ext}, mime={mime}. Please upload a PDF or DOCX file."
         )
+    
 
     try:
         # Generate a unique filename
         file_extension = Path(file.filename).suffix.lower()
         unique_filename = f"{uuid.uuid4()}{file_extension}"
-        file_path = Path(settings.UPLOAD_DIR) / unique_filename
+        file_path = UPLOAD_DIR / unique_filename
         
         # Save the uploaded file
         await save_upload_file(file, file_path)
         
-        # Process the document through the pipeline
+        # Process the document
         document_data = pipeline.process_document(file_path)
         
         # Save the processed document as JSON
         json_path = pipeline.save_as_json(document_data)
         
         # Create response
-        response = DocumentResponse(
+        return DocumentResponse(
             success=True,
             message=f"Successfully processed {file.filename}",
-            document=Document(**document_data),
-            metadata={
-                'json_path': str(json_path),
-                'original_filename': file.filename
-            }
+            document=Document(**document_data)
         )
-        
-        return response
         
     except Exception as e:
         logger.error(f"Error processing document: {str(e)}")
@@ -115,13 +123,13 @@ async def upload_document(
 
 @router.post("/upload/batch/", response_model=List[DocumentResponse], status_code=status.HTTP_201_CREATED)
 async def upload_multiple_documents(
-    files: List[UploadFile] = File(..., description="Multiple document files to upload (PDF or DOCX)"),
+    files: List[UploadFile] = File(..., description="Multiple document files to upload (PDF only)"),
     options: Optional[DocumentProcessingOptions] = None
 ):
     """
     Upload and process multiple documents in a single request.
     
-    Supported file types: PDF, DOCX
+    Supported file types: PDF
     """
     if not files or len(files) == 0:
         raise HTTPException(
@@ -133,26 +141,33 @@ async def upload_multiple_documents(
 
     for file in files:
         try:
-            # Check file type
-            content_type = file.content_type
-            if content_type not in settings.ALLOWED_FILE_TYPES:
+            # Check file type (PDF or DOCX)
+            ext = Path(file.filename).suffix.lower()
+            mime = (file.content_type or "").lower()
+            allowed_exts = {".pdf", ".docx"}
+            allowed_mimes = {
+                "application/pdf",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+
+            }
+            if ext not in allowed_exts or mime not in allowed_mimes:
                 responses.append(DocumentResponse(
                     success=False,
-                    message=f"Skipped {file.filename}: Unsupported file type {content_type}",
-                    error=f"Unsupported file type: {content_type}"
+                    message=f"Skipped {file.filename}: Unsupported file type",
+                    error=f"Unsupported file type: ext={ext}, mime={mime}"
                 ))
                 continue
             
             # Generate a unique filename
             file_extension = Path(file.filename).suffix.lower()
             unique_filename = f"{uuid.uuid4()}{file_extension}"
-            file_path = Path(settings.UPLOAD_DIR) / unique_filename
+            file_path = UPLOAD_DIR / unique_filename
             
             # Save the uploaded file
             await save_upload_file(file, file_path)
             
             # Process the document
-            document_data = document_processor.process_document(file_path)
+            document_data = pipeline.process_document(file_path)
             
             # Create response
             responses.append(DocumentResponse(
@@ -161,7 +176,7 @@ async def upload_multiple_documents(
                 document=Document(**document_data)
             ))
 
-          except Exception as e:
+        except Exception as e:
             logger.error(f"Error processing document {file.filename}: {str(e)}")
             # Clean up the file if it was partially uploaded
             if 'file_path' in locals() and file_path.exists():
@@ -174,32 +189,3 @@ async def upload_multiple_documents(
             ))
     
     return responses
-
-@router.get("/{document_id}", response_model=DocumentResponse)
-async def get_document(document_id: str):
-    """
-    Retrieve a processed document by its ID.
-    
-    Note: In a real implementation, this would fetch from a database.
-    """
-    # This is a placeholder implementation
-    # In a real app, you would fetch the document from a database
-    return JSONResponse(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        content={"detail": "Not implemented"}
-    )
-
-@router.get("/", response_model=DocumentListResponse)
-async def list_documents(limit: int = 10, skip: int = 0):
-    """
-    List all processed documents with pagination.
-    
-    Note: In a real implementation, this would query a database.
-    """
-    # This is a placeholder implementation
-    # In a real app, you would fetch documents from a database with pagination
-    return JSONResponse(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        content={"detail": "Not implemented"}
-    )
-    
