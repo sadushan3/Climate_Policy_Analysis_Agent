@@ -1,6 +1,6 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from "react";
+import { useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ResultCard() {
   const location = useLocation();
@@ -16,7 +16,7 @@ export default function ResultCard() {
           initial={{ opacity: 0, y: 50, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 50, scale: 0.95 }}
-          transition={{ duration: 0.6, type: 'spring' }}
+          transition={{ duration: 0.6, type: "spring" }}
           className="w-full max-w-4xl p-8 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 rounded-3xl shadow-xl border border-blue-400"
         >
           {/* Header Section */}
@@ -48,7 +48,7 @@ export default function ResultCard() {
                 className="h-4 bg-gradient-to-r from-teal-500 to-teal-400 rounded-xl"
                 initial={{ width: 0 }}
                 animate={{ width: `${result.similarity_score * 100}%` }}
-                transition={{ duration: 1, type: 'spring' }}
+                transition={{ duration: 1, type: "spring" }}
               />
             </div>
           </div>
@@ -67,7 +67,7 @@ export default function ResultCard() {
               },
             }}
           >
-            {[ 
+            {[
               {
                 title: "✅ Overlap",
                 items: result.details.overlap,
@@ -113,10 +113,10 @@ export default function ResultCard() {
                       <motion.li
                         key={i}
                         whileHover={{
-                          color: `text-${section.hoverColor}`,
                           scale: 1.08,
                         }}
                         transition={{ type: "spring", stiffness: 300 }}
+                        className={`hover:text-${section.hoverColor}`}
                       >
                         {item}
                       </motion.li>
