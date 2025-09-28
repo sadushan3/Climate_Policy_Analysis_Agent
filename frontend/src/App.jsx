@@ -23,7 +23,7 @@ export default function App() {
     []
   )
 
-  // ---------- validation (keeps values as strings while typing) ----------
+  // ---------- validation ----------
   const validate = (f) => {
     const e = {}
     if (!f.location?.trim()) e.location = 'Location is required'
@@ -70,18 +70,18 @@ export default function App() {
   // ---------- handlers ----------
   const onChange = (e) => {
     const { name, value } = e.target
-    // Keep as string so caret stays stable; no auto-convert here
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
   const onBlur = (e) => {
     const { name, min, max, step, value } = e.target
     setTouched((prev) => ({ ...prev, [name]: true }))
-    // Clamp and tidy only when leaving the field (prevents caret jump while typing)
     let v = value
     v = clamp(v, min, max)
     v = roundToStep(v, step)
-    setForm((prev) => ({ ...prev, [name]: v }))
+    if (v !== value) {
+      setForm((prev) => ({ ...prev, [name]: v }))
+    }
   }
 
   const onSubmit = async (e) => {
@@ -157,13 +157,13 @@ export default function App() {
         <form onSubmit={onSubmit} style={styles.grid} noValidate>
           <Field label="Location" name="location" />
           <Field label="Month" name="month"
-            inputProps={{ type: 'number', min: 1, max: 12, step: 1, inputMode: 'numeric' }} />
+            inputProps={{ type: 'text', inputMode: 'numeric', pattern: '[0-9]*', min: 1, max: 12 }} />
           <Field label="Temperature (°C)" name="temperature_c"
-            inputProps={{ type: 'number', step: 0.1, inputMode: 'decimal' }} />
+            inputProps={{ type: 'text', inputMode: 'decimal', pattern: '[0-9]*[.,]?[0-9]*', step: 0.1 }} />
           <Field label="Humidity (%)" name="humidity_pct"
-            inputProps={{ type: 'number', min: 0, max: 100, step: 1, inputMode: 'numeric' }} />
+            inputProps={{ type: 'text', inputMode: 'numeric', pattern: '[0-9]*', min: 0, max: 100, step: 1 }} />
           <Field label="Wind (km/h)" name="wind_kmh"
-            inputProps={{ type: 'number', min: 0, step: 0.1, inputMode: 'decimal' }} />
+            inputProps={{ type: 'text', inputMode: 'decimal', pattern: '[0-9]*[.,]?[0-9]*', min: 0, step: 0.1 }} />
 
           <div style={{ gridColumn: '1 / -1' }}>
             <button
@@ -177,7 +177,6 @@ export default function App() {
 
         {error && <div style={styles.error}>⚠️ {error}</div>}
 
-        {/* Results appear only after user clicks the button */}
         {submitted && result && (
           <div style={styles.result}>
             <h2 style={{ marginTop: 0 }}>Result</h2>
@@ -225,7 +224,6 @@ export default function App() {
 }
 
 const styles = {
-  // Center horizontally + vertically
   page: {
     minHeight: '100vh',
     display: 'flex',
