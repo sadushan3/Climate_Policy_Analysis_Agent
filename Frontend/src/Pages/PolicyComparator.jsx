@@ -1,177 +1,87 @@
-import React, { useState } from 'react';
-import { Box, Container, TextField, Button, Typography, Paper, CircularProgress } from '@mui/material';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-// We'll use a simple state-based router since we're in a single file
-function PolicyResult({ result, onBack }) {
-  const resultText = JSON.stringify(result, null, 2);
-  
-  return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        position: 'relative',
-        zIndex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-      }}
-    >
-      <Paper elevation={12} sx={{
-        p: 6,
-        borderRadius: 4,
-        boxShadow: '0 12px 32px rgba(0,0,0,0.2)',
-        width: '100%',
-        maxWidth: '600px',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-      }}>
-        <Typography variant="h4" align="center" gutterBottom>
-          Comparison Result
-        </Typography>
-        <Box sx={{ mt: 3, p: 2, backgroundColor: 'rgba(0,0,0,0.05)', borderRadius: 2, whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
-          {resultText}
-        </Box>
-        <Box textAlign="center" mt={3}>
-          <Button variant="outlined" size="large" onClick={onBack}>
-            Go Back
-          </Button>
-        </Box>
-      </Paper>
-    </Container>
-  );
-}
-
-
-function PolicyComparator({ onCompareSuccess }) {
+export default function PolicyComparator() {
   const [policy1, setPolicy1] = useState("");
   const [policy2, setPolicy2] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleCompare = async () => {
     setError("");
     setLoading(true);
     try {
-      // Since we don't have a backend, we'll simulate the API call.
-      // In a real app, you would replace this with your axios call.
-      const simulatedResult = {
-        summary: "The first policy is more comprehensive regarding environmental regulations, while the second policy is stronger on data privacy protection.",
-        common_points: ["Risk assessment", "Compliance with local laws"],
-        differences: [
-          "Policy 1 includes clauses for carbon footprint reporting, which Policy 2 lacks.",
-          "Policy 2 has a detailed section on data breach notification, which is not present in Policy 1."
-        ]
-      };
-      
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
-      onCompareSuccess(simulatedResult);
+      const response = await axios.post("http://127.0.0.1:8000/api/compare_policy", {
+        policy1,
+        policy2,
+      });
+
+      // ✅ Navigate to /result with backend response
+      navigate("/result", { state: { result: response.data } });
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError("❌ Failed to compare policies. Please try again.");
+      console.error(err);
     }
     setLoading(false);
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        position: "relative",
-        zIndex: 1,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-      }}
-    >
-      <Paper
-        elevation={12}
-        sx={{
-          p: 6,
-          borderRadius: 4,
-          boxShadow: "0 12px 32px rgba(0,0,0,0.2)",
-          width: "100%",
-          maxWidth: "600px",
-          backgroundColor: "rgba(255, 255, 255, 0.8)",
-        }}
-      >
-        <Typography variant="h3" align="center" gutterBottom>
-          Policy Comparator
-        </Typography>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="bg-white shadow-lg rounded-2xl p-10 max-w-5xl w-full">
+        <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-3">
+          Instant Policy Comparison
+        </h1>
+        <p className="text-center text-gray-500 mb-10">
+          Paste your policy documents below. Our AI will analyze them and provide
+          a clear, side-by-side comparison in seconds.
+        </p>
 
-        <TextField
-          label="Policy 1"
-          multiline
-          minRows={4}
-          fullWidth
-          margin="normal"
-          value={policy1}
-          onChange={(e) => setPolicy1(e.target.value)}
-          variant="outlined"
-        />
-        <TextField
-          label="Policy 2"
-          multiline
-          minRows={4}
-          fullWidth
-          margin="normal"
-          value={policy2}
-          onChange={(e) => setPolicy2(e.target.value)}
-          variant="outlined"
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+          {/* Policy A */}
+          <div className="border border-gray-200 rounded-xl p-6">
+            <label className="block text-gray-700 font-semibold mb-2">
+              Policy A
+            </label>
+            <textarea
+              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-400"
+              rows="6"
+              value={policy1}
+              onChange={(e) => setPolicy1(e.target.value)}
+              placeholder="Paste the full text of the first policy here."
+            />
+          </div>
 
-        <Box textAlign="center" mt={3}>
-          <Button
-            variant="contained"
-            size="large"
+          {/* Policy B */}
+          <div className="border border-gray-200 rounded-xl p-6">
+            <label className="block text-gray-700 font-semibold mb-2">
+              Policy B
+            </label>
+            <textarea
+              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-400"
+              rows="6"
+              value={policy2}
+              onChange={(e) => setPolicy2(e.target.value)}
+              placeholder="Paste the full text of the second policy here."
+            />
+          </div>
+        </div>
+
+        <div className="text-center">
+          <button
             onClick={handleCompare}
             disabled={!policy1 || !policy2 || loading}
+            className="px-8 py-3 bg-indigo-600 text-white rounded-lg font-medium shadow hover:bg-indigo-700 transition disabled:opacity-50"
           >
-            {loading ? <CircularProgress size={26} color="inherit" /> : "Compare"}
-          </Button>
-        </Box>
+            {loading ? "Comparing..." : "🚀 Compare Policies"}
+          </button>
+        </div>
 
-        {error && <Typography color="error" mt={3} align="center">{error}</Typography>}
-      </Paper>
-    </Container>
-  );
-}
-
-export default function App() {
-  const [result, setResult] = useState(null);
-
-  const handleCompareSuccess = (data) => {
-    setResult(data);
-  };
-
-  return (
-    <Box sx={{ minHeight: "100vh", position: "relative" }}>
-      {/* Background Video */}
-      <video
-        autoPlay
-        loop
-        muted
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          zIndex: -1,
-        }}
-      >
-        <source src="" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-
-      {/* Centered Content */}
-      {!result ? (
-        <PolicyComparator onCompareSuccess={handleCompareSuccess} />
-      ) : (
-        <PolicyResult result={result} onBack={() => setResult(null)} />
-      )}
-    </Box>
+        {error && (
+          <p className="text-red-500 text-center mt-4 font-medium">{error}</p>
+        )}
+      </div>
+    </div>
   );
 }
