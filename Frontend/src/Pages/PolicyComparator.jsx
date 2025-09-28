@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export default function PolicyComparator({ onCompareSuccess }) {
+export default function PolicyComparator() {
   const [policy1, setPolicy1] = useState("");
   const [policy2, setPolicy2] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleCompare = async () => {
     setError("");
@@ -15,7 +17,9 @@ export default function PolicyComparator({ onCompareSuccess }) {
         policy1,
         policy2,
       });
-      onCompareSuccess(response.data);
+
+      // ✅ Navigate to /result with backend response
+      navigate("/result", { state: { result: response.data } });
     } catch (err) {
       setError("❌ Failed to compare policies. Please try again.");
       console.error(err);
@@ -30,51 +34,37 @@ export default function PolicyComparator({ onCompareSuccess }) {
           Instant Policy Comparison
         </h1>
         <p className="text-center text-gray-500 mb-10">
-          Paste your policy documents below. Our AI will analyze them and
-          provide a clear, side-by-side comparison in seconds.
+          Paste your policy documents below. Our AI will analyze them and provide
+          a clear, side-by-side comparison in seconds.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           {/* Policy A */}
-          <div className="border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition">
+          <div className="border border-gray-200 rounded-xl p-6">
             <label className="block text-gray-700 font-semibold mb-2">
               Policy A
             </label>
             <textarea
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-400"
               rows="6"
               value={policy1}
               onChange={(e) => setPolicy1(e.target.value)}
               placeholder="Paste the full text of the first policy here."
             />
-            <div className="mt-4 flex justify-center text-sm text-gray-500">
-              <span className="mx-2">or</span>
-              <label className="cursor-pointer px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
-                Upload Document
-                <input type="file" className="hidden" />
-              </label>
-            </div>
           </div>
 
           {/* Policy B */}
-          <div className="border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition">
+          <div className="border border-gray-200 rounded-xl p-6">
             <label className="block text-gray-700 font-semibold mb-2">
               Policy B
             </label>
             <textarea
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-400"
               rows="6"
               value={policy2}
               onChange={(e) => setPolicy2(e.target.value)}
               placeholder="Paste the full text of the second policy here."
             />
-            <div className="mt-4 flex justify-center text-sm text-gray-500">
-              <span className="mx-2">or</span>
-              <label className="cursor-pointer px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
-                Upload Document
-                <input type="file" className="hidden" />
-              </label>
-            </div>
           </div>
         </div>
 
@@ -82,7 +72,7 @@ export default function PolicyComparator({ onCompareSuccess }) {
           <button
             onClick={handleCompare}
             disabled={!policy1 || !policy2 || loading}
-            className="px-8 py-3 bg-indigo-600 text-white text-lg rounded-lg font-medium shadow hover:bg-indigo-700 transition disabled:opacity-50"
+            className="px-8 py-3 bg-indigo-600 text-white rounded-lg font-medium shadow hover:bg-indigo-700 transition disabled:opacity-50"
           >
             {loading ? "Comparing..." : "🚀 Compare Policies"}
           </button>

@@ -1,6 +1,21 @@
 import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-export default function ResultCard({ result, onBack }) {
+export default function ResultCard() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const result = location.state?.result;
+
+  if (!result) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-600">
+          ⚠ No result found. Please go back and compare again.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-10 flex justify-center">
       <div className="bg-white shadow-lg rounded-2xl p-10 max-w-5xl w-full">
@@ -19,20 +34,18 @@ export default function ResultCard({ result, onBack }) {
         {/* Overlap */}
         <section className="mb-10">
           <h3 className="text-xl font-semibold text-gray-800 mb-3">✅ Overlap</h3>
-          <p className="text-gray-600 mb-4">
-            These are the terms and conditions that are similar between Policy A
-            and Policy B.
-          </p>
           <ul className="list-disc list-inside text-gray-700 space-y-2">
             {result.details.overlap.length > 0 ? (
-              result.details.overlap.map((item, idx) => <li key={idx}>{item}</li>)
+              result.details.overlap.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))
             ) : (
               <li className="text-gray-400 italic">No overlaps found</li>
             )}
           </ul>
         </section>
 
-        {/* Unique Policy A */}
+        {/* Unique to Policy A */}
         <section className="mb-10">
           <h3 className="text-xl font-semibold text-indigo-600 mb-3">
             Unique to Policy A
@@ -48,7 +61,7 @@ export default function ResultCard({ result, onBack }) {
           </ul>
         </section>
 
-        {/* Unique Policy B */}
+        {/* Unique to Policy B */}
         <section className="mb-10">
           <h3 className="text-xl font-semibold text-purple-600 mb-3">
             Unique to Policy B
@@ -67,7 +80,7 @@ export default function ResultCard({ result, onBack }) {
         {/* Back Button */}
         <div className="text-center">
           <button
-            onClick={onBack}
+            onClick={() => navigate("/")}
             className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
           >
             🔙 Go Back
