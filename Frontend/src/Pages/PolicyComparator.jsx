@@ -1,177 +1,123 @@
-import React, { useState } from 'react';
-import { Box, Container, TextField, Button, Typography, Paper, CircularProgress } from '@mui/material';
+import React, { useState } from "react";
 
-// We'll use a simple state-based router since we're in a single file
 function PolicyResult({ result, onBack }) {
-  const resultText = JSON.stringify(result, null, 2);
-  
   return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        position: 'relative',
-        zIndex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-      }}
-    >
-      <Paper elevation={12} sx={{
-        p: 6,
-        borderRadius: 4,
-        boxShadow: '0 12px 32px rgba(0,0,0,0.2)',
-        width: '100%',
-        maxWidth: '600px',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-      }}>
-        <Typography variant="h4" align="center" gutterBottom>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="bg-white shadow-lg rounded-2xl p-8 max-w-2xl w-full">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
           Comparison Result
-        </Typography>
-        <Box sx={{ mt: 3, p: 2, backgroundColor: 'rgba(0,0,0,0.05)', borderRadius: 2, whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
-          {resultText}
-        </Box>
-        <Box textAlign="center" mt={3}>
-          <Button variant="outlined" size="large" onClick={onBack}>
+        </h2>
+        <pre className="bg-gray-100 p-4 rounded-md text-sm text-gray-700 whitespace-pre-wrap">
+          {JSON.stringify(result, null, 2)}
+        </pre>
+        <div className="mt-6 text-center">
+          <button
+            onClick={onBack}
+            className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+          >
             Go Back
-          </Button>
-        </Box>
-      </Paper>
-    </Container>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
-
 
 function PolicyComparator({ onCompareSuccess }) {
   const [policy1, setPolicy1] = useState("");
   const [policy2, setPolicy2] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleCompare = async () => {
-    setError("");
     setLoading(true);
-    try {
-      // Since we don't have a backend, we'll simulate the API call.
-      // In a real app, you would replace this with your axios call.
-      const simulatedResult = {
-        summary: "The first policy is more comprehensive regarding environmental regulations, while the second policy is stronger on data privacy protection.",
-        common_points: ["Risk assessment", "Compliance with local laws"],
-        differences: [
-          "Policy 1 includes clauses for carbon footprint reporting, which Policy 2 lacks.",
-          "Policy 2 has a detailed section on data breach notification, which is not present in Policy 1."
-        ]
-      };
-      
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
-      onCompareSuccess(simulatedResult);
-    } catch (err) {
-      setError("An error occurred. Please try again.");
-    }
+    // Simulated API call
+    await new Promise((res) => setTimeout(res, 1200));
+    const simulatedResult = {
+      summary:
+        "Policy A covers environmental regulations more, Policy B is stronger on data privacy.",
+      common_points: ["Risk assessment", "Compliance with laws"],
+      differences: [
+        "Policy A includes carbon footprint reporting",
+        "Policy B has detailed data breach section",
+      ],
+    };
+    onCompareSuccess(simulatedResult);
     setLoading(false);
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        position: "relative",
-        zIndex: 1,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-      }}
-    >
-      <Paper
-        elevation={12}
-        sx={{
-          p: 6,
-          borderRadius: 4,
-          boxShadow: "0 12px 32px rgba(0,0,0,0.2)",
-          width: "100%",
-          maxWidth: "600px",
-          backgroundColor: "rgba(255, 255, 255, 0.8)",
-        }}
-      >
-        <Typography variant="h3" align="center" gutterBottom>
-          Policy Comparator
-        </Typography>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="bg-white shadow-lg rounded-2xl p-8 max-w-4xl w-full">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
+          Climatic AI Policy Comparator
+        </h1>
+        <p className="text-center text-gray-500 mb-8">
+          Simply paste your policy text or upload the documents to see a
+          side-by-side comparison.
+        </p>
 
-        <TextField
-          label="Policy 1"
-          multiline
-          minRows={4}
-          fullWidth
-          margin="normal"
-          value={policy1}
-          onChange={(e) => setPolicy1(e.target.value)}
-          variant="outlined"
-        />
-        <TextField
-          label="Policy 2"
-          multiline
-          minRows={4}
-          fullWidth
-          margin="normal"
-          value={policy2}
-          onChange={(e) => setPolicy2(e.target.value)}
-          variant="outlined"
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Policy A
+            </label>
+            <textarea
+              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              rows="6"
+              value={policy1}
+              onChange={(e) => setPolicy1(e.target.value)}
+              placeholder="Paste the full text of the first policy here."
+            />
+            <div className="mt-3 flex items-center justify-center text-sm text-gray-500">
+              <span className="mx-2">or</span>
+              <label className="cursor-pointer px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                Upload Document
+                <input type="file" className="hidden" />
+              </label>
+            </div>
+          </div>
 
-        <Box textAlign="center" mt={3}>
-          <Button
-            variant="contained"
-            size="large"
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Policy B
+            </label>
+            <textarea
+              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              rows="6"
+              value={policy2}
+              onChange={(e) => setPolicy2(e.target.value)}
+              placeholder="Paste the full text of the second policy here."
+            />
+            <div className="mt-3 flex items-center justify-center text-sm text-gray-500">
+              <span className="mx-2">or</span>
+              <label className="cursor-pointer px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                Upload Document
+                <input type="file" className="hidden" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center">
+          <button
             onClick={handleCompare}
             disabled={!policy1 || !policy2 || loading}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium shadow hover:bg-blue-700 transition disabled:opacity-50"
           >
-            {loading ? <CircularProgress size={26} color="inherit" /> : "Compare"}
-          </Button>
-        </Box>
-
-        {error && <Typography color="error" mt={3} align="center">{error}</Typography>}
-      </Paper>
-    </Container>
+            {loading ? "Comparing..." : "Compare Policies"}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
 export default function App() {
   const [result, setResult] = useState(null);
 
-  const handleCompareSuccess = (data) => {
-    setResult(data);
-  };
-
-  return (
-    <Box sx={{ minHeight: "100vh", position: "relative" }}>
-      {/* Background Video */}
-      <video
-        autoPlay
-        loop
-        muted
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          zIndex: -1,
-        }}
-      >
-        <source src="" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-
-      {/* Centered Content */}
-      {!result ? (
-        <PolicyComparator onCompareSuccess={handleCompareSuccess} />
-      ) : (
-        <PolicyResult result={result} onBack={() => setResult(null)} />
-      )}
-    </Box>
+  return !result ? (
+    <PolicyComparator onCompareSuccess={setResult} />
+  ) : (
+    <PolicyResult result={result} onBack={() => setResult(null)} />
   );
 }

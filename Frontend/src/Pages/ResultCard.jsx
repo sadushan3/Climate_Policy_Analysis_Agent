@@ -1,135 +1,126 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState } from "react";
 
-export default function ResultCard() {
-  const location = useLocation();
-  const result = location.state?.result;
-
-  if (!result) return null;
-
+function ResultPage({ result, onBack }) {
   return (
-    <div className="h-screen w-full bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 overflow-hidden flex items-center justify-center">
-      <AnimatePresence>
-        <motion.div
-          key="result-card"
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 50, scale: 0.95 }}
-          transition={{ duration: 0.6, type: "spring" }}
-          className="w-full max-w-4xl p-8 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 rounded-3xl shadow-xl border border-blue-400"
-        >
-          {/* Header Section */}
-          <motion.h2
-            className="text-4xl font-semibold text-gray-800 mb-8 text-center tracking-wide"
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            🔎 Comparison Result
-          </motion.h2>
+    <div className="min-h-screen bg-gray-50">
+      {/* Navbar */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+          <h1 className="text-lg font-bold text-blue-600">PolicyCompare</h1>
+          <nav className="space-x-6 text-gray-600 font-medium">
+            <a href="#">Home</a>
+            <a href="#">Compare</a>
+            <a href="#">About</a>
+          </nav>
+          <button className="w-8 h-8 rounded-full overflow-hidden border">
+            <img
+              src="https://i.pravatar.cc/40"
+              alt="profile"
+              className="w-full h-full"
+            />
+          </button>
+        </div>
+      </header>
 
-          {/* Similarity Score Section */}
-          <div className="mb-8">
-            <motion.p
-              className="text-2xl text-gray-800 mb-4"
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
-              Similarity Score:{" "}
-              <span className="font-bold text-teal-600">
-                {(result.similarity_score * 100).toFixed(2)}%
-              </span>
-            </motion.p>
+      {/* Content */}
+      <main className="max-w-5xl mx-auto px-6 py-10">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          Policy Comparison Results
+        </h2>
+        <p className="text-gray-600 mb-6">
+          Review the detailed comparison between Policy A and Policy B.
+        </p>
 
-            <div className="w-full bg-gray-300 h-4 rounded-xl mt-4 overflow-hidden">
-              <motion.div
-                className="h-4 bg-gradient-to-r from-teal-500 to-teal-400 rounded-xl"
-                initial={{ width: 0 }}
-                animate={{ width: `${result.similarity_score * 100}%` }}
-                transition={{ duration: 1, type: "spring" }}
-              />
-            </div>
-          </div>
+        {/* Similarity Score */}
+        <div className="bg-blue-50 rounded-xl p-6 text-center mb-10">
+          <p className="text-lg text-gray-700 font-medium">Similarity Score</p>
+          <h3 className="text-5xl font-extrabold text-blue-600 mt-2">
+            {(result.similarity_score * 100).toFixed(0)}%
+          </h3>
+          <span className="text-sm text-gray-500">Comparing</span>
+        </div>
 
-          {/* Details Section */}
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: {},
-              visible: {
-                transition: {
-                  staggerChildren: 0.15,
-                },
-              },
-            }}
-          >
-            {[
-              {
-                title: "✅ Overlap",
-                items: result.details.overlap,
-                color: "teal-500",
-                hoverColor: "teal-600",
-                shadowColor: "#4fd1c533",
-              },
-              {
-                title: "📌 Unique Policy 1",
-                items: result.details.unique_policy1,
-                color: "blue-500",
-                hoverColor: "blue-600",
-                shadowColor: "#63b3ed33",
-              },
-              {
-                title: "📌 Unique Policy 2",
-                items: result.details.unique_policy2,
-                color: "purple-500",
-                hoverColor: "purple-600",
-                shadowColor: "#9f7aea33",
-              },
-            ].map((section, idx) => (
-              <motion.div
-                key={idx}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: `0 0 24px ${section.shadowColor}`,
-                }}
-                className="bg-white p-6 rounded-xl border border-gray-300 hover:bg-gray-50 transition-colors"
+        {/* Overlap Section */}
+        <section className="mb-10">
+          <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+            ✅ Overlap
+          </h3>
+          <p className="text-gray-600 mb-4">
+            These are the terms and conditions similar between Policy A and B.
+          </p>
+          <div className="space-y-3">
+            {result.details.overlap.map((item, i) => (
+              <div
+                key={i}
+                className="flex justify-between bg-white shadow-sm border rounded-lg px-4 py-3"
               >
-                <h3
-                  className={`font-semibold mb-4 text-${section.color} text-2xl`}
-                >
-                  {section.title}
-                </h3>
-                <ul className="list-disc list-inside text-gray-600">
-                  {section.items.length > 0 ? (
-                    section.items.map((item, i) => (
-                      <motion.li
-                        key={i}
-                        whileHover={{
-                          scale: 1.08,
-                        }}
-                        transition={{ type: "spring", stiffness: 300 }}
-                        className={`hover:text-${section.hoverColor}`}
-                      >
-                        {item}
-                      </motion.li>
-                    ))
-                  ) : (
-                    <li className="text-gray-400 italic">None</li>
-                  )}
-                </ul>
-              </motion.div>
+                <span className="font-medium text-gray-700">{item}</span>
+                <span className="text-gray-600">
+                  Both policies cover {item}.
+                </span>
+              </div>
             ))}
-          </motion.div>
-        </motion.div>
-      </AnimatePresence>
+          </div>
+        </section>
+
+        {/* Unique Policy A */}
+        <section className="mb-10">
+          <h3 className="text-xl font-semibold text-gray-800">
+            Unique to <span className="text-blue-600">Policy A</span>
+          </h3>
+          <p className="text-gray-600 mb-4">
+            These features are only found in Policy A.
+          </p>
+          <ul className="space-y-3">
+            {result.details.unique_policy1.map((item, i) => (
+              <li
+                key={i}
+                className="bg-white shadow-sm border rounded-lg px-4 py-3"
+              >
+                <span className="font-medium text-gray-700">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Unique Policy B */}
+        <section className="mb-10">
+          <h3 className="text-xl font-semibold text-gray-800">
+            Unique to <span className="text-blue-600">Policy B</span>
+          </h3>
+          <p className="text-gray-600 mb-4">
+            These features are only found in Policy B.
+          </p>
+          <ul className="space-y-3">
+            {result.details.unique_policy2.map((item, i) => (
+              <li
+                key={i}
+                className="bg-white shadow-sm border rounded-lg px-4 py-3"
+              >
+                <span className="font-medium text-gray-700">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Back Button */}
+        <div className="text-center">
+          <button
+            onClick={onBack}
+            className="px-6 py-3 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+          >
+            Compare Again
+          </button>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-100 py-4 text-center text-sm text-gray-500 mt-10">
+        © 2024 PolicyCompare. All rights reserved. | Privacy Policy | Terms of
+        Service
+      </footer>
     </div>
   );
 }
+
+export default ResultPage;

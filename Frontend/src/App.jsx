@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import PolicyComparator from './pages/PolicyComparator';
-import ResultCard from './pages/Resultcard';
+import PolicyComparator from './Pages/PolicyComparator';
+import ResultPage from './pages/Resultcard';
 import './App.css';
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<PolicyComparator />} />
-        <Route path="/result" element={<ResultCard />} />
+        <Route path="/result" element={<ResultPage />} />
       </Routes>
     </Router>
   );
