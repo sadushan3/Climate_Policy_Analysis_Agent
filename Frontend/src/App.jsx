@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Navbar from "./components/Navbar";
 import PolicyAnalyzer from "./Pages/DocumentAnalysis"; // Upload & analyze page
 import ResultPage from "./Pages/ResultPage";           // Page to display results
+import AnalysisCharts from "./Pages/AnalysisCharts";
 import "./App.css";
 
 function App() {
@@ -22,6 +23,8 @@ function App() {
 
             {/* Result page */}
             <Route path="/result" element={<ResultPage />} />
+
+            <Route path="/charts" element={<AnalysisCharts />} />
           </Routes>
         </main>
 

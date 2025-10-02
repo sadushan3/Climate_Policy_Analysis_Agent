@@ -45,9 +45,8 @@ export default function Navbar() {
           </div>
 
           <div className="flex space-x-4">
-            <NavLink to="/">Compare</NavLink>
-            <NavLink to="/upload">Upload</NavLink>
-            <NavLink to="/analysis">Analysis</NavLink>
+            <NavLink to="/">Home</NavLink>
+            <NavLink to="/charts">Analysis</NavLink>
             <a
               href="https://github.com/sadushan3/Climate_Policy_Analysis_Agent"
               target="_blank"
