@@ -1,32 +1,12 @@
 from fastapi import FastAPI
-from Backend.Agents.IT22180520_Sadushan_Agent.Routes import Routes
 from fastapi.middleware.cors import CORSMiddleware
-import os
-
-import sys
-import os
-
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-from fastapi import FastAPI
-from routes import router
-
-
-app = FastAPI(title="Document Analyzer Agent")
-
-# include API routes
-app.include_router(router)
-
-@app.get("/")
-def root():
-    return {"message": "Welcome to Document Analyzer Agent"}  
-
 from dotenv import load_dotenv
+import os
 
-
+# Load environment variables
 load_dotenv()
 
-app = FastAPI(title="Climatic Policy AI - Policy Comparator")
+app = FastAPI(title="Climate Policy Analysis API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -36,7 +16,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from Backend.Agents.IT22180520_Sadushan_Agent.Routes import Routes, policy_routes
+
+# Include routers
 app.include_router(Routes.router, prefix="/api", tags=["Policy Comparator"])
+app.include_router(policy_routes.router, prefix="/api/policy", tags=["Document Analysis"])
 
 @app.get("/")
 def root():

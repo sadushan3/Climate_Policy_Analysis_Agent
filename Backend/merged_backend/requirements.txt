@@ -16,3 +16,6 @@ scikit-learn
 pandas
 numpy
 python-multipart
+tf-keras
+huggingface_hub[hf_xet]
+fpdf==1.7.2

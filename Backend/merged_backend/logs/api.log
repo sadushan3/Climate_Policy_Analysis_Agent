@@ -1,0 +1,125 @@
+2025-10-01 21:34:06,859 - INFO - Use pytorch device_name: cpu
+2025-10-01 21:34:06,859 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 21:35:59,973 - INFO - Use pytorch device_name: cpu
+2025-10-01 21:35:59,973 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 21:37:52,526 - INFO - Use pytorch device_name: cpu
+2025-10-01 21:37:52,526 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 21:39:12,648 - INFO - Use pytorch device_name: cpu
+2025-10-01 21:39:12,648 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 21:39:48,242 - INFO - Use pytorch device_name: cpu
+2025-10-01 21:39:48,243 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 21:47:03,246 - INFO - Use pytorch device_name: cpu
+2025-10-01 21:47:03,247 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 21:47:09,110 - INFO - All models loaded successfully
+2025-10-01 21:50:47,408 - INFO - Use pytorch device_name: cpu
+2025-10-01 21:50:47,409 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 21:50:53,775 - INFO - All models loaded successfully
+2025-10-01 21:52:22,370 - INFO - Use pytorch device_name: cpu
+2025-10-01 21:52:22,370 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 21:52:27,794 - INFO - All models loaded successfully
+2025-10-01 21:52:31,972 - INFO - Policy comparison done | Similarity: 0.78 | Overlap: 3 | Unique A: 9 | Unique B: 14
+2025-10-01 21:52:34,014 - ERROR - Error in weather recommendation: [Errno 2] No such file or directory: 'data\\weather_samples.csv'
+2025-10-01 21:54:15,178 - INFO - Policy comparison done | Similarity: 0.78 | Overlap: 3 | Unique A: 9 | Unique B: 14
+2025-10-01 21:54:17,201 - ERROR - Error in weather recommendation: [Errno 2] No such file or directory: 'data\\weather_samples.csv'
+2025-10-01 21:55:58,356 - INFO - Policy comparison done | Similarity: 0.78 | Overlap: 3 | Unique A: 9 | Unique B: 14
+2025-10-01 22:00:42,564 - INFO - Use pytorch device_name: cpu
+2025-10-01 22:00:42,564 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 22:00:49,344 - INFO - All models loaded successfully
+2025-10-01 22:01:18,571 - INFO - Use pytorch device_name: cpu
+2025-10-01 22:01:18,571 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 22:01:24,776 - INFO - All models loaded successfully
+2025-10-01 22:02:18,496 - INFO - Use pytorch device_name: cpu
+2025-10-01 22:02:18,496 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 22:02:25,073 - INFO - All models loaded successfully
+2025-10-01 22:04:03,865 - INFO - Use pytorch device_name: cpu
+2025-10-01 22:04:03,866 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 22:04:11,365 - INFO - All models loaded successfully
+2025-10-01 22:04:59,081 - INFO - Use pytorch device_name: cpu
+2025-10-01 22:04:59,081 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 22:05:04,429 - INFO - All models loaded successfully
+2025-10-01 22:08:05,001 - INFO - Use pytorch device_name: cpu
+2025-10-01 22:08:05,001 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 22:08:13,237 - INFO - All models loaded successfully
+2025-10-01 22:09:01,962 - INFO - Use pytorch device_name: cpu
+2025-10-01 22:09:01,962 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 22:09:07,567 - INFO - All models loaded successfully
+2025-10-01 22:10:10,434 - INFO - Use pytorch device_name: cpu
+2025-10-01 22:10:10,435 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 22:10:17,153 - INFO - All models loaded successfully
+2025-10-01 22:10:44,158 - INFO - Use pytorch device_name: cpu
+2025-10-01 22:10:44,158 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 22:10:49,784 - INFO - All models loaded successfully
+2025-10-01 22:11:08,267 - ERROR - Error in full analysis: 'dict' object has no attribute 'dict'
+2025-10-01 22:12:47,135 - INFO - Use pytorch device_name: cpu
+2025-10-01 22:12:47,135 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 22:12:54,211 - INFO - All models loaded successfully
+2025-10-01 22:25:16,443 - INFO - Use pytorch device_name: cpu
+2025-10-01 22:25:16,443 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 22:25:21,372 - INFO - All models loaded successfully
+2025-10-01 22:27:01,084 - INFO - Policy comparison done | Similarity: 0.54 | Overlap: 4 | Unique A: 27 | Unique B: 27
+2025-10-01 22:30:41,966 - INFO - Policy comparison done | Similarity: 1.00 | Overlap: 98 | Unique A: 4 | Unique B: 4
+2025-10-01 22:45:23,566 - INFO - Policy comparison done | Similarity: 1.00 | Overlap: 102 | Unique A: 0 | Unique B: 0
+2025-10-01 22:54:34,093 - INFO - Use pytorch device_name: cpu
+2025-10-01 22:54:34,094 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 22:54:40,561 - INFO - All models loaded successfully
+2025-10-01 22:55:11,838 - INFO - Use pytorch device_name: cpu
+2025-10-01 22:55:11,839 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 22:55:17,963 - INFO - All models loaded successfully
+2025-10-01 23:04:35,502 - INFO - Loading spaCy model...
+2025-10-01 23:04:36,311 - INFO - Loading summarization model...
+2025-10-01 23:04:41,115 - INFO - Initializing comparator model...
+2025-10-01 23:04:41,117 - INFO - Use pytorch device_name: cpu
+2025-10-01 23:04:41,117 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 23:04:47,372 - INFO - Initializing weather processor...
+2025-10-01 23:04:47,373 - INFO - All models loaded successfully
+2025-10-01 23:09:07,557 - INFO - Shutting down application...
+2025-10-01 23:10:15,243 - INFO - Loading spaCy model...
+2025-10-01 23:10:15,914 - INFO - Loading summarization model...
+2025-10-01 23:10:19,263 - INFO - Initializing comparator model...
+2025-10-01 23:10:19,265 - INFO - Use pytorch device_name: cpu
+2025-10-01 23:10:19,265 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 23:10:24,625 - INFO - Initializing weather processor...
+2025-10-01 23:10:24,626 - INFO - All models loaded successfully
+2025-10-01 23:21:12,409 - INFO - Shutting down application...
+2025-10-01 23:21:55,920 - INFO - Loading spaCy model...
+2025-10-01 23:21:56,611 - INFO - Loading summarization model...
+2025-10-01 23:21:59,934 - INFO - Initializing comparator model...
+2025-10-01 23:21:59,936 - INFO - Use pytorch device_name: cpu
+2025-10-01 23:21:59,936 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 23:22:05,730 - INFO - Initializing weather processor...
+2025-10-01 23:22:05,731 - INFO - All models loaded successfully
+2025-10-01 23:22:05,734 - INFO - Shutting down application...
+2025-10-01 23:22:33,791 - INFO - Loading spaCy model...
+2025-10-01 23:22:34,412 - INFO - Loading summarization model...
+2025-10-01 23:22:37,152 - INFO - Initializing comparator model...
+2025-10-01 23:22:37,154 - INFO - Use pytorch device_name: cpu
+2025-10-01 23:22:37,154 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 23:22:45,998 - INFO - Initializing weather processor...
+2025-10-01 23:22:45,998 - INFO - All models loaded successfully
+2025-10-01 23:25:13,100 - INFO - Shutting down application...
+2025-10-01 23:25:35,455 - INFO - Loading spaCy model...
+2025-10-01 23:25:35,870 - INFO - Loading summarization model...
+2025-10-01 23:25:41,310 - INFO - Initializing comparator model...
+2025-10-01 23:25:41,311 - INFO - Use pytorch device_name: cpu
+2025-10-01 23:25:41,312 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 23:25:49,350 - INFO - Initializing weather processor...
+2025-10-01 23:25:49,350 - INFO - All models loaded successfully
+2025-10-01 23:25:49,353 - INFO - Shutting down application...
+2025-10-01 23:26:02,238 - INFO - Loading spaCy model...
+2025-10-01 23:26:02,599 - INFO - Loading summarization model...
+2025-10-01 23:26:05,304 - INFO - Initializing comparator model...
+2025-10-01 23:26:05,305 - INFO - Use pytorch device_name: cpu
+2025-10-01 23:26:05,305 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 23:26:13,017 - INFO - Initializing weather processor...
+2025-10-01 23:26:13,018 - INFO - All models loaded successfully
+2025-10-01 23:29:46,457 - INFO - Policy comparison done | Similarity: 0.53 | Overlap: 0 | Unique A: 1 | Unique B: 2
+2025-10-01 23:33:58,576 - INFO - Shutting down application...
+2025-10-01 23:37:11,328 - INFO - Loading spaCy model...
+2025-10-01 23:37:11,736 - INFO - Loading summarization model...
+2025-10-01 23:37:14,509 - INFO - Initializing comparator model...
+2025-10-01 23:37:14,510 - INFO - Use pytorch device_name: cpu
+2025-10-01 23:37:14,510 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-10-01 23:37:20,230 - INFO - Initializing weather processor...
+2025-10-01 23:37:20,230 - INFO - All models loaded successfully
+2025-10-01 23:49:56,307 - INFO - Policy comparison done | Similarity: 0.55 | Overlap: 0 | Unique A: 7 | Unique B: 4
+2025-10-01 23:55:31,537 - INFO - Policy comparison done | Similarity: 0.45 | Overlap: 0 | Unique A: 3 | Unique B: 2
