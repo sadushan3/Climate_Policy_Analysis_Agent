@@ -7,9 +7,7 @@ from models.models import PolicyAnalysis
 nlp = spacy.load("en_core_web_sm")
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
-# -------------------------
-# Policy Analysis
-# -------------------------
+
 def analyze_document(text: str) -> PolicyAnalysis:
     analysis = PolicyAnalysis()
     sentences = re.split(r'(?<=[.!?])\s+', text)
@@ -67,25 +65,17 @@ def analyze_document(text: str) -> PolicyAnalysis:
 
     return analysis
 
-# -------------------------
-# Summarization
-# -------------------------
+
 def summarize_text(text: str, max_length: int = 120, min_length: int = 40) -> str:
-    """
-    Summarize long text into a concise policy summary.
-    """
+
     # Truncate if text is very long
     text = text[:2000]
     result = summarizer(text, max_length=max_length, min_length=min_length, do_sample=False)
     return result[0]['summary_text']
 
-# -------------------------
-# Named Entity Recognition
-# -------------------------
+
 def extract_entities(text: str):
-    """
-    Extract named entities like Dates, Orgs, Countries, Numbers, etc.
-    """
+
     doc = nlp(text)
     entities = []
     for ent in doc.ents:
