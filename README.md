@@ -1,158 +1,362 @@
-# 🌍 Climate Policy Analysis Agent
+# Climate Policy Intelligence
 
-> An AI-powered application for analyzing, comparing, and extracting insights from climate-related policy documents using NLP and machine learning.
+Upload two national climate policies. Get back a passage-level semantic
+comparison, a nine-dimension coverage profile, every quantified commitment
+extracted into a typed schema, and grounded answers to questions about them —
+with a page citation behind every claim.
 
----
-
-## 📌 Overview
-
-Climate policy documents are often lengthy, complex, and difficult to compare manually.
-
-The **Climate Policy Analysis Agent** is designed to simplify this process by allowing users to upload climate policy documents and automatically analyze their content using **Natural Language Processing (NLP)** and **Machine Learning (ML)** techniques.
-
-The system can identify important policy information, compare two policies, find overlaps and differences, calculate similarity, and generate recommendations for policy improvement.
-
-### 🎯 Main Goal
-
-Transform:
-
-**Unstructured Policy Documents → Structured Insights → Policy Comparison → Recommendations**
-
----
-
-## ✨ Features
-
-### 📂 Document Upload
-
-Upload climate policy documents in different formats:
-
-- PDF
-- Microsoft Word
-- Text
-
-The system extracts the content and prepares it for further analysis.
+```
+PDF / DOCX / TXT
+      │
+      ▼
+ extract ──► page-aware text          numbers, %, $ and ° preserved
+      │
+      ▼
+ chunk ────► structure-aware passages  heading-bounded, sentence overlap
+      │
+      ├──► embed ─────► vector index ──┐
+      │                                 ├──► hybrid retrieval ──► grounded Q&A
+      ├──► BM25 index ─────────────────┘      (RRF + cross-encoder)
+      │
+      ├──► classify ──► 9 policy dimensions   (zero-shot, F1 0.80)
+      │
+      └──► extract ───► typed targets         (100% on the labelled set)
+                             │
+                             ▼
+              two documents ──► Hungarian alignment
+                             ──► coverage divergence
+                             ──► target-by-target ambition diff
+                             ──► written analyst verdict (optional LLM)
+```
 
 ---
 
-### 🧹 Text Preprocessing
+## What it does
 
-Uploaded documents are processed before analysis.
+**Compares two real documents.** Passages are embedded and matched with the
+Hungarian algorithm on the cosine similarity matrix, producing a *one-to-one*
+optimal assignment. That constraint matters: with greedy nearest-neighbour
+matching, one generic paragraph ("this plan supports sustainable development")
+happily becomes the counterpart of eight paragraphs in the other document and
+the overlap score comes out far too high.
 
-The preprocessing pipeline handles:
+**Classifies policy content without keywords.** Each dimension in the taxonomy
+carries natural-language *prototypes*; a sentence is scored by its maximum
+cosine similarity to them. "Unabated coal-fired generation will be retired from
+the grid before 2035" is classified as a mitigation commitment despite sharing
+no vocabulary with the label. Lexical cues add a bounded bonus that is capped
+strictly below the decision threshold, so they can promote a semantically-close
+sentence but never carry one on their own.
 
-- Text extraction
-- Cleaning
-- Noise removal
-- Text normalization
-- Input sanitization
+**Extracts quantified commitments into a typed schema.** `45% below 2005 levels
+by 2030` becomes `{target_type: emissions_reduction, value: 45.0, unit: "%",
+target_year: 2030, base_year: 2005, conditional: false}` — with the source
+sentence and page attached. Conditional targets (contingent on international
+finance) are flagged separately, because reporting a conditional pledge as firm
+is a real analytical error.
 
-This improves the quality of the downstream NLP analysis.
+**Answers questions with citations.** Hybrid retrieval (dense + BM25, fused with
+Reciprocal Rank Fusion, reranked by a cross-encoder) selects the passages; the
+answer must cite them by number. Citations are parsed back out and resolved to
+page numbers, so an answer that cites nothing is **detected and labelled
+unsupported** rather than being indistinguishable from a grounded one.
 
----
-
-### 🧠 NLP-Based Document Analysis
-
-The system analyzes policy documents using NLP techniques.
-
-It can identify:
-
-- Important keywords
-- Policy-related information
-- Named Entities
-- Relevant sections of policy documents
-- Structured policy information
-
-Named Entity Recognition (NER) is used to identify important entities within the documents.
-
----
-
-### 🤝 Policy Comparison
-
-The **Policy Comparator Agent** allows two policy documents to be compared.
-
-The system identifies:
-
-#### ✅ Common Information
-
-Information, words, phrases, or policy areas shared between the two documents.
-
-#### 🔹 Unique to Policy A
-
-Information found in the first policy but not the second.
-
-#### 🔸 Unique to Policy B
-
-Information found in the second policy but not the first.
-
-#### 📈 Similarity Score
-
-A similarity score is generated to provide an overall indication of how closely the two policies are related.
+**Works without an API key.** The LLM layer is strictly additive. With no key,
+every endpoint still returns a complete result — extractive summaries, full
+comparison, retrieval — and says so. With a key, it adds abstractive summaries,
+the written comparison verdict, and generated answers.
 
 ---
 
-### 🎯 Recommendation Engine
+## Measured, not asserted
 
-The system uses the results of the policy analysis and comparison to generate recommendations for potential policy improvements.
+`python -m eval.run_eval --sweep --ablate` scores three hand-labelled sets in
+`Backend/eval/dataset/`, each split into **dev** (all tuning happens here) and
+**test** (scored once, and what is reported below).
 
-Recommendations can be based on:
+| Task | Metric | Held-out test |
+|---|---|---|
+| Dimension classification | micro-F1 | **0.707** (P 0.765 / R 0.658) |
+| Dimension classification | non-policy prose correctly rejected | **10/10** |
+| Target extraction | correct type detected | **17/17** |
+| Target extraction | value / unit / year / base year | **100%** each |
+| Target extraction | false positives on numeric non-commitments | **0/5** |
+| Retrieval | recall@3 / MRR | **1.000 / 0.984** |
 
-- Missing policy areas
-- Differences between policies
-- Common policy areas
-- Extracted policy information
-- Comparative analysis
+### Why hybrid retrieval, measured
+
+`--ablate` scores each retrieval arm separately, split by query type:
+
+| strategy | R@1 | R@3 | MRR | paraphrase MRR | rare-literal MRR |
+|---|---|---|---|---|---|
+| dense only | 0.901 | 1.000 | 0.969 | 0.950 | 1.000 |
+| BM25 only | 0.760 | 0.896 | 0.839 | **0.742** | 1.000 |
+| hybrid (RRF) | 0.901 | 1.000 | 0.969 | 0.950 | 1.000 |
+| hybrid + rerank | **0.948** | 1.000 | **0.984** | 0.975 | 1.000 |
+
+BM25 alone collapses on paraphrase queries (MRR 0.742 against dense's 0.950) and
+is perfect on rare literals like `Article 6.2` and `LULUCF`. The fused retriever
+matches the better arm on both, and the cross-encoder adds the last few points of
+top-1 precision. That table is why the complexity is there.
+
+### Methodology, and what these numbers are not
+
+Thresholds are fitted on **dev** and frozen before **test** is scored once. Each
+dimension gets its own threshold (`app/nlp/calibration.json`, regenerated by
+`--sweep --write-calibration`), because a broad cross-cutting dimension like
+Sectoral Coverage sits closer to the decision boundary than a narrow one like
+Technology, and a single global cut either floods the broad ones with false
+positives or starves them of recall. Per-dimension calibration lifted held-out F1
+from 0.677 to 0.707.
+
+**An earlier version of this README claimed F1 0.804. That number was wrong** --
+it came from tuning the threshold on the same 36 sentences it then reported on.
+Splitting the data honestly dropped the measured score to 0.571; broadening the
+taxonomy prototypes (diagnosed on dev only) and calibrating per dimension brought
+it back to 0.707. The 0.707 is the trustworthy number, and it is lower than the
+one that was easy to claim.
+
+Remaining limits, stated plainly:
+
+- **~150 labelled sentences, one annotator -- the author** -- who also wrote the
+  taxonomy prototypes the classifier scores against. That circularity means these
+  measure internal consistency and guard against regression; they are not an
+  unbiased estimate of accuracy on documents from the wild.
+- **`sectors` is the weak dimension** (F1 0.42, recall 0.31). It is a
+  cross-cutting attribute overlapping every other dimension, and it needs either
+  far more labelled data or its own classifier.
+- A second annotator and text sampled from real published NDCs are what would
+  turn this into a benchmark rather than a regression suite.
+
+CI runs `--check`, failing the build if micro-F1 drops below 0.65, target
+detection below 0.85, or retrieval recall@3 below 0.80. The floors sit just under
+current values, so they catch regressions rather than expressing hopes.
+
+The harness has repeatedly earned its place. It caught a badly calibrated
+threshold, a regex that silently dropped the deadline from a third of targets, a
+`%\b` that could never match in `"70% of"`, a `renewable\b` that could not match
+the plural "Renewables", a unit normaliser turning `TWh` into `TWH`, and -- after
+a fix -- a fresh bug where a bare `to` in the deadline pattern matched
+"relative **to 2005**" and reported the baseline as the target year.
 
 ---
 
-## 🏗️ System Architecture
+## Authentication and multi-tenancy
 
-The application follows an end-to-end document analysis workflow:
+Every document endpoint requires a bearer token, and every query is scoped to the
+calling user.
 
-```text
-                    ┌──────────────────────┐
-                    │      User Input      │
-                    │  PDF / Word / Text   │
-                    └───────────┬──────────┘
-                                │
-                                ▼
-                    ┌──────────────────────┐
-                    │   Document Upload    │
-                    └───────────┬──────────┘
-                                │
-                                ▼
-                    ┌──────────────────────┐
-                    │ Text Extraction &    │
-                    │   Preprocessing      │
-                    └───────────┬──────────┘
-                                │
-                                ▼
-                    ┌──────────────────────┐
-                    │     NLP Analysis     │
-                    │ Keywords + NER        │
-                    └───────────┬──────────┘
-                                │
-                     ┌──────────┴──────────┐
-                     ▼                     ▼
-             ┌───────────────┐     ┌────────────────┐
-             │ Policy        │     │ Policy         │
-             │ Analyzer      │     │ Comparator     │
-             └───────┬───────┘     └───────┬────────┘
-                     │                     │
-                     └──────────┬──────────┘
-                                ▼
-                    ┌──────────────────────┐
-                    │ Similarity &         │
-                    │ Difference Analysis  │
-                    └───────────┬──────────┘
-                                │
-                                ▼
-                    ┌──────────────────────┐
-                    │ Recommendation       │
-                    │ Engine               │
-                    └───────────┬──────────┘
-                                │
-                                ▼
-                    ┌──────────────────────┐
-                    │   Policy Insights    │
-                    │ & Recommendations    │
-                    └──────────────────────┘
+**Two token types, deliberately different in kind.** The access token is a
+short-lived signed JWT (30 min), validated with no database round trip. The
+refresh token is a long-lived opaque random string stored server-side as a
+SHA-256 hash -- because it *is* a row, it can be revoked, which is what makes
+logout and "sign out everywhere" actually work. A design that hands out a 30-day
+JWT and calls it a session has no way to end that session early.
+
+**Refresh tokens rotate on every use, and reuse is treated as a breach.**
+Presenting an already-rotated token means it leaked -- the legitimate holder has
+moved past it -- so every live session for that account is revoked. Writing that
+test found a real bug: the revoke-all ran inside the transaction that then
+raised, so SQLite rolled the revocation back and the breach response silently did
+nothing.
+
+**Other decisions worth defending:**
+
+- **Argon2id** for passwords (memory-hard; GPU attacks gain far less than against
+  bcrypt), with transparent rehashing when cost parameters are raised.
+- **Refresh token in an HttpOnly cookie, access token in memory only** -- never
+  `localStorage`. One XSS bug should not hand over a long-lived session. The cost
+  is one silent `/refresh` call on page load.
+- **A foreign document id returns 404, not 403.** A 403 confirms the id exists,
+  turning the endpoint into an enumeration oracle.
+- **Deduplication is per-owner.** A global content-hash lookup would tell a user
+  their upload already existed -- disclosing that another tenant holds that file.
+- **Mixed-ownership requests fail wholesale**, never partially. Silently
+  answering over a smaller corpus than the caller asked for is worse than an error.
+- **Login is throttled on IP *and* account**, so attempts cannot be spread across
+  source addresses. Scope stated honestly: the limiter is per-process and resets
+  on restart -- adequate on one node; a real deployment moves it to Redis or the edge.
+- **`JWT_SECRET` has no default.** In production the app refuses to boot without
+  it; in dev it generates an ephemeral one and warns.
+- **Job endpoints are owner-scoped too** -- job results carry full document
+  analysis, so leaving them open would undo everything above.
+
+The 24 auth tests include nine that specifically try to read across the tenant
+boundary -- including through retrieval, where an unscoped index would mix
+another user's passages into an otherwise normal-looking answer.
+
+---
+
+## Running it
+
+### Docker (everything)
+
+```bash
+docker compose up --build
+# UI   http://localhost:5173
+# API  http://localhost:8000/docs
+```
+
+### Local
+
+```bash
+# backend
+cd Backend
+python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\activate
+pip install -r requirements-dev.txt --extra-index-url https://download.pytorch.org/whl/cpu
+uvicorn app.main:app --reload
+
+# frontend (separate terminal)
+cd Frontend
+npm install
+npm run dev
+```
+
+Optional — enables written synthesis and generated answers:
+
+```bash
+cp Backend/.env.example Backend/.env
+# set ANTHROPIC_API_KEY=sk-ant-...
+```
+
+### Verify
+
+```bash
+cd Backend
+pytest                      # 72 tests, no network required
+ruff check app tests eval
+python -m eval.run_eval --sweep
+```
+
+---
+
+## Design decisions worth defending
+
+**Hybrid retrieval, not pure vector search.** Dense retrieval generalises across
+wording (`cut emissions` ≈ `reduce GHG`) but is unreliable on the rare literal
+tokens that matter most in this domain — `Article 6.4`, `LULUCF`, `2005 levels`,
+a specific fund name. BM25 nails those and fails at paraphrase. Each covers the
+other's blind spot. The two ranked lists are fused with RRF, which needs no
+score calibration between retrievers because their scores are on incomparable
+scales, then the fused head is re-scored by a cross-encoder — too slow to run
+over a whole corpus, which is exactly why it runs only over the candidates.
+
+**No vector database.** At this corpus size an exact NumPy matmul is *faster*
+than an approximate index, returns exact neighbours, and has zero operational
+surface. The retriever sits behind an interface, so swapping in pgvector when
+the corpus outgrows RAM is a one-file change. Knowing why you didn't reach for a
+vector DB is worth more than having reached for one.
+
+**Sentence-level classification.** The threshold is calibrated on labelled
+*sentences*, so inference scores sentences too and max-pools up to the passage.
+Scoring 300-word passages with a sentence-calibrated threshold would be a
+train/serve domain shift — the reported F1 would not be the F1 you actually get.
+It also means the evidence shown in the UI is the one sentence that triggered
+the match, not the surrounding blob.
+
+**Share is sentence-based, not chunk-based.** Chunk counts are an artefact of
+the chunker's token budget: a short document lands in one chunk and reports
+100% coverage on every dimension it touches. This was caught by running the
+real pipeline, not by a unit test.
+
+**Nothing is truncated.** Summarisation is map-reduce over the whole document.
+V1 called `text[:2000]`, summarised the first two pages, and presented the
+result as a summary of the document.
+
+**Jobs are async with streamed progress.** Analysis takes 10–60s; holding an
+HTTP request open for that gives the user a spinner with no information and dies
+to any proxy timeout. Uploads return `202` with a job id and stream progress over
+SSE, with polling as a fallback because SSE is the thing most likely to be
+broken by a corporate proxy.
+
+**Scope stated honestly:** the job manager is in-process and backed by an
+asyncio queue. Right call for a single node, and it makes the concurrency model
+explicit — but it does not survive a restart or scale across workers. The swap
+to Redis/RQ sits behind the same `submit`/`get`/`subscribe` interface.
+
+---
+
+## API
+
+All `/api/v1` endpoints below require `Authorization: Bearer <access_token>`
+except the auth routes themselves, `/api/v1/taxonomy` and `/health`.
+
+| Method | Path | Purpose |
+|---|---|---|
+| `POST` | `/api/v1/auth/register` | Create an account; sets the refresh cookie |
+| `POST` | `/api/v1/auth/login` | Sign in (throttled per IP and per account) |
+| `POST` | `/api/v1/auth/refresh` | Rotate the refresh token, mint a new access token |
+| `POST` | `/api/v1/auth/logout` | Revoke this session |
+| `POST` | `/api/v1/auth/logout-all` | Revoke every session for the account |
+| `GET` | `/api/v1/auth/me` | The caller's profile and document count |
+| `POST` | `/api/v1/documents` | Upload; returns `202` + job id (deduplicates by content hash) |
+| `GET` | `/api/v1/documents` | List the library |
+| `GET` | `/api/v1/documents/{id}` | Full analysis payload |
+| `DELETE` | `/api/v1/documents/{id}` | Remove document, chunks and index |
+| `GET` | `/api/v1/jobs/{id}/stream` | SSE progress |
+| `POST` | `/api/v1/compare` | Two-document comparison (async) |
+| `POST` | `/api/v1/search` | Hybrid retrieval, no generation |
+| `POST` | `/api/v1/ask` | Grounded answer with resolved citations |
+| `POST` | `/api/v1/ask/stream` | Same, token-streamed |
+| `GET` | `/api/v1/taxonomy` | The classification scheme, inspectable |
+| `GET` | `/health` | Readiness, model state, LLM availability |
+
+Interactive docs at `/docs`.
+
+---
+
+## Layout
+
+```
+Backend/
+  app/
+    api/v1/        routes + typed request/response schemas
+    core/          logging (request-id correlated), typed errors, jobs, security
+    ingestion/     page-aware extraction, structure-aware chunking
+    nlp/           embeddings, hybrid retrieval, classifier, extraction,
+                   alignment, summarisation, optional Claude layer
+    services/      ingest, comparison, RAG question answering
+    store/         SQLite catalogue, vector index, users and sessions
+  eval/            labelled datasets + metrics harness
+  tests/           72 tests, NLP layer unmocked (24 of them auth/isolation)
+Frontend/
+  src/pages/       Library · Document · Compare · Ask
+  src/lib/api.js   single API client, SSE + polling fallback
+legacy/            the V1 implementation, kept for reference
+```
+
+---
+
+## Roadmap
+
+1. **A second annotator** on the eval set, and text sampled from real published
+   NDCs rather than written for the purpose. This is the single change that would
+   turn the numbers above from a regression suite into a benchmark.
+2. **Fix `sectors`** (F1 0.42) — either far more labelled data or a dedicated
+   classifier, since it overlaps every other dimension by construction.
+3. **Fine-tune the classifier** on the scaled set and compare against the
+   zero-shot baseline the eval already establishes.
+4. **OCR fallback** for scanned PDFs, which are currently rejected with a clear
+   error rather than silently producing an empty analysis.
+5. **Redis-backed jobs and rate limiting**, for multi-worker deployment.
+6. **Password reset and email verification** — registration currently trusts the
+   address it is given.
+
+---
+
+## What changed from V1
+
+| | V1 | V2 |
+|---|---|---|
+| Comparison | `set(a.split()) & set(b.split())` on two halves of *one* file | Hungarian alignment across two real documents |
+| Classification | 12 hardcoded keyword lists | 9-dimension zero-shot taxonomy, held-out F1 0.707 |
+| Targets | reported that "billion" appeared in a sentence | typed schema, 100% field accuracy on held-out labels |
+| Text handling | sanitiser stripped `%`, `$`, `°` — deleting every target | figures preserved; de-hyphenation, boilerplate removal |
+| Coverage | first 2000 characters | whole document, map-reduce |
+| Retrieval | none | dense + BM25 + RRF + cross-encoder rerank |
+| Citations | none | page-level, on every claim |
+| Evaluation | none | dev/test splits, per-dimension calibration, retriever ablation, CI gate |
+| Auth | none — fully open API | JWT + rotating refresh tokens, provable per-tenant isolation |
+| Tests | print statements against a live server | 72 automated, unmocked NLP |
+| Ops | `allow_origins=["*"]`, blocking startup, no container | CORS allowlist, async warm-up, Docker, CI, non-root image |
+| Frontend | `@vitejs/plugin-react` never registered | working build, 237 kB initial (was 610 kB) |

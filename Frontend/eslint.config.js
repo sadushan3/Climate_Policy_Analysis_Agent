@@ -23,7 +23,14 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // Core `no-unused-vars` does not track identifiers consumed by JSX, so a
+      // PascalCase name is assumed to be a component or constant that is used in
+      // markup. `argsIgnorePattern` extends the same allowance to destructured
+      // props such as `{ icon: Icon }`, which are rendered as `<Icon />`.
+      'no-unused-vars': [
+        'error',
+        { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^(_|[A-Z])' },
+      ],
     },
   },
 ])

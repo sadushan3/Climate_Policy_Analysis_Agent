@@ -1,0 +1,112 @@
+{"split": "dev", "text": "Sri Lanka will reduce greenhouse gas emissions by 14.5% against the business-as-usual scenario by 2030, of which 4% is unconditional and 10.5% is conditional on international support.", "labels": ["mitigation", "international"]}
+{"split": "dev", "text": "The Government commits to achieving net zero emissions by 2050 across all sectors of the economy.", "labels": ["mitigation"]}
+{"split": "dev", "text": "Renewable energy will account for 70% of national electricity generation by 2030, up from 35% in 2020.", "labels": ["mitigation", "sectors"]}
+{"split": "dev", "text": "Unabated coal-fired power stations will be retired from the generation fleet no later than 2035.", "labels": ["mitigation", "sectors"]}
+{"split": "dev", "text": "An economy-wide emissions trading scheme will be introduced with an absolute cap declining by 4% annually.", "labels": ["mitigation", "governance"]}
+{"split": "dev", "text": "A carbon price floor of USD 45 per tonne will apply to the power and industrial sectors from 2027.", "labels": ["mitigation", "finance"]}
+{"split": "dev", "text": "Fossil fuel subsidies will be phased out by 2027 and the fiscal savings redirected to social protection.", "labels": ["mitigation", "equity"]}
+{"split": "dev", "text": "The carbon intensity of the electricity grid will fall to 100 grams of CO2 per kilowatt hour by 2035.", "labels": ["mitigation", "sectors"]}
+{"split": "dev", "text": "Coastal protection works will be constructed along 120 km of shoreline to defend communities against sea level rise and storm surge.", "labels": ["adaptation", "sectors"]}
+{"split": "dev", "text": "A national multi-hazard early warning system will be established to give at-risk communities advance notice of floods, cyclones and drought.", "labels": ["adaptation"]}
+{"split": "dev", "text": "Vulnerability and risk assessments will be completed for all coastal districts before the end of the plan period.", "labels": ["adaptation"]}
+{"split": "dev", "text": "Mangrove and wetland ecosystems will be restored to buffer inland areas from tidal surge and saline intrusion.", "labels": ["adaptation", "sectors"]}
+{"split": "dev", "text": "Urban drainage infrastructure will be upgraded to withstand a one-in-fifty-year rainfall event.", "labels": ["adaptation", "sectors"]}
+{"split": "dev", "text": "Heat action plans will be prepared for the twelve largest cities to reduce mortality during extreme heat episodes.", "labels": ["adaptation"]}
+{"split": "dev", "text": "The total investment required to deliver the mitigation component is estimated at USD 12.6 billion over the period to 2030.", "labels": ["finance"]}
+{"split": "dev", "text": "The Government will issue sovereign green bonds and establish a blended finance facility to crowd in private capital.", "labels": ["finance"]}
+{"split": "dev", "text": "Access to the Green Climate Fund and bilateral concessional loans will be pursued to close the adaptation financing gap.", "labels": ["finance", "international"]}
+{"split": "dev", "text": "An annual budget allocation of LKR 45 billion is committed to the adaptation programme for the first three years.", "labels": ["finance", "adaptation"]}
+{"split": "dev", "text": "Public financial institutions will be required to disclose the climate risk exposure of their lending portfolios.", "labels": ["finance", "mrv"]}
+{"split": "dev", "text": "The Climate Change Act 2023 establishes legally binding five-year carbon budgets and creates a duty on ministers to meet them.", "labels": ["governance", "mitigation"]}
+{"split": "dev", "text": "A National Climate Change Council chaired by the Prime Minister will coordinate implementation across ministries.", "labels": ["governance"]}
+{"split": "dev", "text": "The Ministry of Environment is designated as the national focal point and is mandated to enforce compliance with the regulations made under this Act.", "labels": ["governance"]}
+{"split": "dev", "text": "Climate objectives will be mainstreamed into the national development plan and all sectoral investment appraisals.", "labels": ["governance"]}
+{"split": "dev", "text": "Failure to comply with the emissions reporting obligation is an offence punishable by a fine not exceeding one million rupees.", "labels": ["governance", "mrv"]}
+{"split": "dev", "text": "A measurement, reporting and verification system will be established to track emissions across all covered sectors.", "labels": ["mrv"]}
+{"split": "dev", "text": "The national greenhouse gas inventory will be updated annually and progress will be reported biennially in line with the enhanced transparency framework.", "labels": ["mrv", "international"]}
+{"split": "dev", "text": "Indicators, baselines and milestones will be defined for each measure so that delivery can be independently audited.", "labels": ["mrv"]}
+{"split": "dev", "text": "An independent expert committee will review progress every two years and lay its report before Parliament.", "labels": ["mrv", "governance"]}
+{"split": "dev", "text": "Emissions from road transport will be reduced through electrification of the public bus fleet and expansion of urban rail.", "labels": ["sectors", "mitigation"]}
+{"split": "dev", "text": "Methane emissions from paddy cultivation and livestock will be addressed through improved water management and feed practices.", "labels": ["sectors", "mitigation"]}
+{"split": "dev", "text": "Landfill gas capture will be installed at all municipal waste sites serving populations above 100,000.", "labels": ["sectors", "mitigation"]}
+{"split": "dev", "text": "Forest cover will be increased to 32% of land area through reforestation and protection of existing carbon sinks.", "labels": ["sectors", "mitigation"]}
+{"split": "dev", "text": "Minimum energy performance standards will apply to all new commercial and residential buildings from 2026.", "labels": ["sectors", "governance"]}
+{"split": "dev", "text": "Clinker substitution and alternative fuels will reduce process emissions from domestic cement manufacture.", "labels": ["sectors", "mitigation"]}
+{"split": "dev", "text": "A just transition programme will provide retraining and income support to workers displaced from coal-dependent industries.", "labels": ["equity"]}
+{"split": "dev", "text": "The rights, knowledge and free prior informed consent of indigenous and local communities will be respected in all land-based measures.", "labels": ["equity"]}
+{"split": "dev", "text": "Gender-responsive budgeting will be applied so that women and youth benefit equitably from climate investments.", "labels": ["equity"]}
+{"split": "dev", "text": "Targeted energy bill support will protect low-income households from the distributional impact of the carbon levy.", "labels": ["equity", "finance"]}
+{"split": "dev", "text": "Green hydrogen production and grid-scale battery storage will be supported through targeted research and development funding.", "labels": ["technology"]}
+{"split": "dev", "text": "Carbon capture, utilisation and storage will be demonstrated at two industrial sites by 2032.", "labels": ["technology", "sectors"]}
+{"split": "dev", "text": "Technology transfer arrangements and technical capacity building will be sought from development partners.", "labels": ["technology", "international"]}
+{"split": "dev", "text": "A national innovation fund will co-finance demonstration projects for low-carbon industrial processes.", "labels": ["technology", "finance"]}
+{"split": "dev", "text": "This contribution is submitted in accordance with Article 4 of the Paris Agreement and the decisions of the Conference of the Parties.", "labels": ["international"]}
+{"split": "dev", "text": "The country will engage in Article 6.2 cooperative approaches while ensuring that internationally transferred mitigation outcomes are not double counted.", "labels": ["international", "mitigation"]}
+{"split": "dev", "text": "Bilateral partnerships with regional neighbours will be pursued on shared river basin management and disaster response.", "labels": ["international", "adaptation"]}
+{"split": "dev", "text": "The outcome of the first global stocktake has informed the level of ambition set out in this contribution.", "labels": ["international"]}
+{"split": "dev", "text": "Energy intensity of GDP will be reduced by 25% by 2035 relative to 2020 through industrial efficiency standards.", "labels": ["mitigation", "sectors"]}
+{"split": "dev", "text": "Public health systems will be strengthened to respond to heat stress and the expanding range of vector-borne disease.", "labels": ["adaptation", "equity"]}
+{"split": "dev", "text": "Climate-resilient crop varieties will be distributed to smallholder farmers in drought-prone districts.", "labels": ["adaptation", "sectors"]}
+{"split": "dev", "text": "USD 800 million of concessional finance will be directed to coastal defence works protecting vulnerable fishing communities.", "labels": ["finance", "adaptation", "equity"]}
+{"split": "dev", "text": "This chapter describes the geography, topography and prevailing climate of the country.", "labels": []}
+{"split": "dev", "text": "For the purposes of this Act, unless the context otherwise requires, the following definitions apply.", "labels": []}
+{"split": "dev", "text": "The document is organised into six chapters followed by three technical annexes.", "labels": []}
+{"split": "dev", "text": "The population was recorded at 22.2 million at the most recent census.", "labels": []}
+{"split": "dev", "text": "Table 4 sets out the abbreviations used throughout this report.", "labels": []}
+{"split": "dev", "text": "The drafting committee met on four occasions between January and June.", "labels": []}
+{"split": "dev", "text": "Comments received during the public consultation are summarised in Annex B.", "labels": []}
+{"split": "dev", "text": "Average annual rainfall in the central highlands exceeds 2,500 millimetres.", "labels": []}
+{"split": "test", "text": "The country will cut greenhouse gas emissions by 45% below 2005 levels by 2030 as its nationally determined contribution.", "labels": ["mitigation", "international"]}
+{"split": "test", "text": "Carbon neutrality across the whole economy is targeted no later than 2060.", "labels": ["mitigation"]}
+{"split": "test", "text": "Installed solar and wind capacity will reach 5,000 MW by 2032, tripling the current renewable fleet.", "labels": ["mitigation", "sectors"]}
+{"split": "test", "text": "Routine flaring of associated gas at upstream facilities will end by 2030.", "labels": ["mitigation", "sectors"]}
+{"split": "test", "text": "A low-emission development strategy to 2060 will be prepared and submitted to the secretariat.", "labels": ["mitigation", "international"]}
+{"split": "test", "text": "Hydrofluorocarbon consumption will be reduced in line with obligations under the Kigali Amendment.", "labels": ["mitigation", "international"]}
+{"split": "test", "text": "Absolute emissions from the power sector will peak before 2028 and decline thereafter.", "labels": ["mitigation", "sectors"]}
+{"split": "test", "text": "Sea walls and revetments will be reinforced at seventeen locations identified as at highest risk of inundation.", "labels": ["adaptation", "sectors"]}
+{"split": "test", "text": "Water storage capacity will be expanded to secure supply through longer and more frequent dry seasons.", "labels": ["adaptation", "sectors"]}
+{"split": "test", "text": "A national adaptation plan will be prepared, setting out priority actions to reduce vulnerability to climate impacts.", "labels": ["adaptation"]}
+{"split": "test", "text": "Disaster risk reduction measures will be integrated into local government planning in all flood-prone municipalities.", "labels": ["adaptation", "governance"]}
+{"split": "test", "text": "Climate risk screening will become a mandatory step in the appraisal of all major infrastructure projects.", "labels": ["adaptation", "governance"]}
+{"split": "test", "text": "Insurance and social safety net instruments will be developed to help farmers absorb climate-related crop losses.", "labels": ["adaptation", "finance", "equity"]}
+{"split": "test", "text": "Delivery of the plan requires an estimated USD 3.4 billion, of which USD 2.1 billion is expected from international sources.", "labels": ["finance", "international"]}
+{"split": "test", "text": "A dedicated National Climate Fund will be capitalised from levy receipts and managed under Treasury oversight.", "labels": ["finance", "governance"]}
+{"split": "test", "text": "Commercial banks will be incentivised to expand green lending through a preferential reserve requirement.", "labels": ["finance"]}
+{"split": "test", "text": "Total adaptation costs are projected at 1.2% of GDP annually through to 2040.", "labels": ["finance", "adaptation"]}
+{"split": "test", "text": "Parliament shall enact primary legislation giving statutory force to the emissions targets set out in this strategy.", "labels": ["governance", "mitigation"]}
+{"split": "test", "text": "An inter-ministerial steering committee will be constituted within six months of publication.", "labels": ["governance"]}
+{"split": "test", "text": "Provincial authorities are empowered to make by-laws consistent with the national framework.", "labels": ["governance"]}
+{"split": "test", "text": "The regulator will be granted powers of inspection, enforcement and the imposition of administrative penalties.", "labels": ["governance"]}
+{"split": "test", "text": "Facilities emitting more than 25,000 tonnes of CO2 equivalent per year must report annually to the national registry.", "labels": ["mrv", "governance"]}
+{"split": "test", "text": "A digital monitoring platform will consolidate activity data from all reporting entities into a single register.", "labels": ["mrv"]}
+{"split": "test", "text": "Third-party verification of reported emissions will be mandatory from the second compliance period.", "labels": ["mrv"]}
+{"split": "test", "text": "Progress against each indicator will be published on a public dashboard updated every quarter.", "labels": ["mrv"]}
+{"split": "test", "text": "Rail freight's share of inland tonne-kilometres will be raised from 8% to 20% by 2035.", "labels": ["sectors", "mitigation"]}
+{"split": "test", "text": "Nitrogen fertiliser use efficiency will be improved through precision application in the arable sector.", "labels": ["sectors", "mitigation"]}
+{"split": "test", "text": "Separate collection of organic waste will be mandatory in all urban local authorities by 2029.", "labels": ["sectors", "governance"]}
+{"split": "test", "text": "Domestic aviation and coastal shipping will be brought within the scope of the reporting obligation.", "labels": ["sectors", "mrv"]}
+{"split": "test", "text": "Degraded peatlands will be rewetted to halt ongoing carbon losses from drained organic soils.", "labels": ["sectors", "mitigation"]}
+{"split": "test", "text": "Communities dependent on peat extraction will receive transition support and alternative livelihood funding.", "labels": ["equity", "finance"]}
+{"split": "test", "text": "Consultation with affected workers and trade unions will precede the closure of any state-owned facility.", "labels": ["equity"]}
+{"split": "test", "text": "Persons with disabilities and the elderly will be prioritised in heatwave and flood response planning.", "labels": ["equity", "adaptation"]}
+{"split": "test", "text": "Energy poverty will be monitored as an explicit indicator of a fair transition.", "labels": ["equity", "mrv"]}
+{"split": "test", "text": "Pilot deployment of direct air capture will be assessed for technical and economic feasibility.", "labels": ["technology"]}
+{"split": "test", "text": "Smart grid and demand-response technologies will be rolled out to accommodate variable renewable generation.", "labels": ["technology", "sectors"]}
+{"split": "test", "text": "A national centre of excellence for climate research will be established at the state university.", "labels": ["technology", "governance"]}
+{"split": "test", "text": "Support will be sought under the Technology Mechanism for capacity building in emissions modelling.", "labels": ["technology", "international"]}
+{"split": "test", "text": "The country reaffirms its commitment to the temperature goal of Article 2 of the Paris Agreement.", "labels": ["international"]}
+{"split": "test", "text": "Regional cooperation on transboundary haze and forest fire management will be strengthened.", "labels": ["international", "adaptation"]}
+{"split": "test", "text": "The conditional element of this target is contingent on the provision of international climate finance and technology transfer.", "labels": ["international", "finance", "technology"]}
+{"split": "test", "text": "Biennial transparency reports will be submitted in accordance with the modalities, procedures and guidelines agreed at COP24.", "labels": ["international", "mrv"]}
+{"split": "test", "text": "District heating networks will be converted from coal to waste heat and heat pumps by 2033.", "labels": ["sectors", "mitigation", "technology"]}
+{"split": "test", "text": "Public procurement rules will require embodied carbon assessment for all construction contracts above the threshold.", "labels": ["governance", "sectors"]}
+{"split": "test", "text": "The present chapter summarises national circumstances relevant to the implementation of the Convention.", "labels": []}
+{"split": "test", "text": "All monetary figures in this document are expressed in constant 2022 prices unless otherwise stated.", "labels": []}
+{"split": "test", "text": "The methodology follows the 2006 IPCC Guidelines as refined in 2019.", "labels": []}
+{"split": "test", "text": "Further detail on each measure is provided in the accompanying technical annex.", "labels": []}
+{"split": "test", "text": "The country has a land area of 65,610 square kilometres and a coastline of 1,340 kilometres.", "labels": []}
+{"split": "test", "text": "This document was approved by Cabinet on 14 March and published the following week.", "labels": []}
+{"split": "test", "text": "Figures may not sum to totals because of rounding.", "labels": []}
+{"split": "test", "text": "Gross domestic product grew at an average annual rate of 4.1% over the last decade.", "labels": []}
+{"split": "test", "text": "A list of stakeholders consulted during preparation appears at the end of this volume.", "labels": []}
+{"split": "test", "text": "Chapter 5 should be read together with the sectoral strategies issued separately.", "labels": []}

@@ -1,0 +1,15 @@
+{
+  "_comment": "Fitted on the dev split by `python -m eval.run_eval --sweep --write-calibration`. Do not hand-edit; re-fit instead.",
+  "global_default": 0.54,
+  "thresholds": {
+    "mitigation": 0.45,
+    "adaptation": 0.51,
+    "finance": 0.48,
+    "governance": 0.57,
+    "mrv": 0.53,
+    "sectors": 0.51,
+    "equity": 0.48,
+    "technology": 0.57,
+    "international": 0.46
+  }
+}

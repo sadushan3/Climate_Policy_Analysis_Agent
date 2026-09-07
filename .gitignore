@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+venv/
+
+# Application data: uploads, SQLite catalogue, vector index
+Backend/var/
+eval-results.json
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+
+# Secrets
+.env
+.env.local
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

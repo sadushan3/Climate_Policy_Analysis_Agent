@@ -1,1 +1,44 @@
 @import "tailwindcss";
+
+/* Design tokens. Defined once here so every surface, border and text colour in
+   the app derives from the same small palette instead of scattered hex values. */
+@theme {
+  --color-canvas: #f7f8f7;
+  --color-surface: #ffffff;
+  --color-ink: #14181a;
+  --color-muted: #5b6770;
+  --color-line: #e3e7e6;
+
+  /* Accent is a deep forest green: on-theme without being a novelty palette. */
+  --color-accent: #0f6b4f;
+  --color-accent-soft: #e6f2ed;
+
+  --color-warn: #b45309;
+  --color-warn-soft: #fef3e2;
+  --color-danger: #b42318;
+  --color-danger-soft: #fdeceb;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-feature-settings: "cv02", "cv03", "cv04";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tabular figures keep columns of percentages and years from shifting as the
+   numbers change -- important on a page that is mostly figures. */
+.tnum { font-variant-numeric: tabular-nums; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.animate-fade-up { animation: fade-up 0.28s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up { animation: none; }
+  html { scroll-behavior: auto; }
+}
